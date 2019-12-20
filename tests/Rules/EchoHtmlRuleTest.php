@@ -26,6 +26,14 @@ class EchoHtmlRuleTest extends RuleTestCase
 				'Parameter #1 (string) is not safehtml-string.',
 				15,
 			],
+			[
+				'Parameter #1 (string|null) is not safehtml-string.',
+				31,
+			],
+			[
+				'Parameter #1 (bool|float|int|string) is not safehtml-string.',
+				34,
+			],
 		]);
 	}
 }

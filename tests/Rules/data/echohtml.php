@@ -17,6 +17,22 @@ function view($n, $s, $b, $t, $m){
 <?= $t ?>
 <?= $m ?>
 
+<?php
+
+    /** @var int|null $n */ $n;
+    /** @var string|null $s */ $s;
+    /** @var bool|null $b */ $b;
+    /** @var int|\stdClass $t */ $t;
+    /** @var scalar $m */ $m;
+
+?>
+
+<?= $n ?>
+<?= $s ?>
+<?= $b ?>
+<?= $t ?>
+<?= $m ?>
+
 
 <?php
 }
