@@ -1,0 +1,30 @@
+<phpunit
+    bootstrap="bootstrap.php"
+    colors="true"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    beStrictAboutChangesToGlobalState="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutTodoAnnotatedTests="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    >
+  <testsuite name="PHPStan Echo Html Rule">
+    <directory suffix="Test.php">.</directory>
+  </testsuite>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">../src</directory>
+    </whitelist>
+  </filter>
+  <logging>
+    <log
+        type="coverage-text"
+        target="php://stdout"
+        showUncoveredFiles="true"
+        showOnlySummary="true"
+        />
+  </logging>
+</phpunit>

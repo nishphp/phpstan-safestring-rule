@@ -1,0 +1,30 @@
+{
+    "name": "nish/phpstan-echo-html-rule",
+    "description": "htmlspecialchars checker for PHPStan",
+    "require": {
+        "php": "~7.1",
+        "nikic/php-parser": "^4.0",
+        "phpstan/phpstan": "^0.12"
+    },
+    "require-dev": {
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpunit/phpunit": "^7.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Satoshi Nishimura",
+            "email": "nishim314@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Nish\\PHPStan\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}
