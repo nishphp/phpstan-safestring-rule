@@ -75,8 +75,10 @@ class EchoHtmlRule implements Rule
             if ($type instanceof UnionType){
                 $innerTypes = $type->getTypes();
                 foreach ($innerTypes as $innerType){
-                    if ($innerType instanceof SafeHtmlType)
+                    if ($innerType instanceof SafeHtmlType ||
+                        $innerType instanceof ConstantStringType)
                         continue;
+
                     if ($innerType instanceof StringType){
                         $messages[] = RuleErrorBuilder::message(sprintf(
                             'Parameter #%d (%s) is not safehtml-string.',
