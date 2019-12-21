@@ -5,13 +5,29 @@ namespace Nish\PHPStan\Rules;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Testing\RuleTestCase;
+use PHPStan\PhpDoc\PhpDocNodeResolver;
+use PHPStan\PhpDoc\TypeNodeResolver;
+
+use Closure;
 
 /**
- * @extends \PHPStan\Testing\RuleTestCase<EchoRule>
+ * @extends \PHPStan\Testing\RuleTestCase<EchoHtmlRule>
  */
 class EchoHtmlRuleTest extends RuleTestCase
 {
+	public function setUp(): void
+	{
+        $resolver = self::getContainer()
+                  ->getByType(TypeNodeResolver::class);
+        Closure::bind(function(){
+            $this->extensions[]
+                = new \Nish\PHPStan\PhpDoc\TypeNodeResolverExtension();
+        }, $resolver, TypeNodeResolver::class)->__invoke();
 
+        // TODO: Where has the function of getTypeNodeResolverExtensions moved?
+	}
+
+    /** @override */
 	protected function getRule(): Rule
 	{
 		return new EchoHtmlRule(
@@ -28,11 +44,15 @@ class EchoHtmlRuleTest extends RuleTestCase
 			],
 			[
 				'Parameter #1 (string|null) is not safehtml-string.',
-				31,
+				25,
 			],
 			[
 				'Parameter #1 (bool|float|int|string) is not safehtml-string.',
-				34,
+				31,
+			],
+			[
+				'Parameter #1 (string) is not safehtml-string.',
+				36,
 			],
 		]);
 	}

@@ -5,9 +5,13 @@ namespace Nish\PHPStan\Type;
 use PHPStan\Broker\Broker;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Type;
+use PHPStan\Type\ErrorType;
 use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\CompoundType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\ClassStringType;
+use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Reflection\ClassMemberAccessAnswerer;
 
 class SafeHtmlType extends StringType
 {
@@ -22,7 +26,7 @@ class SafeHtmlType extends StringType
 			return $type->isAcceptedBy($this, $strictTypes);
 		}
 
-		if ($type instanceof parent) {
+		if ($type instanceof StringType) {
 			return TrinaryLogic::createYes();
 		}
 
@@ -35,12 +39,44 @@ class SafeHtmlType extends StringType
 			return TrinaryLogic::createYes();
 		}
 
+		if ($type instanceof ConstantStringType) {
+			return TrinaryLogic::createYes();
+		}
+
+		if ($type instanceof ClassStringType) {
+			return TrinaryLogic::createYes();
+		}
+
 		if ($type instanceof CompoundType) {
 			return $type->isSubTypeOf($this);
 		}
 
 		return TrinaryLogic::createNo();
 	}
+
+
+	public function isCallable(): TrinaryLogic
+	{
+		return TrinaryLogic::createNo();
+	}
+
+	public function getCallableParametersAcceptors(ClassMemberAccessAnswerer $scope): array
+	{
+		throw new \PHPStan\ShouldNotHappenException();
+	}
+
+	public function toInteger(): Type
+	{
+		return new ErrorType();
+	}
+	public function toFloat(): Type
+	{
+		return new ErrorType();
+	}
+	public function toArray(): Type
+	{
+		return new ErrorType();
+    }
 
 	/**
 	 * @param mixed[] $properties

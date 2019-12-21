@@ -26,6 +26,9 @@
     "autoload-dev": {
         "classmap": [
             "tests/"
+        ],
+        "files": [
+            "tests/Rules/data/echohtml.php"
         ]
     }
 }

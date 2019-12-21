@@ -20,19 +20,23 @@ function view($n, $s, $b, $t, $m){
 <?php
 
     /** @var int|null $n */ $n;
-    /** @var string|null $s */ $s;
-    /** @var bool|null $b */ $b;
-    /** @var int|\stdClass $t */ $t;
-    /** @var scalar $m */ $m;
+    echo $n;
+    /** @var string|null $n */ $n;
+    echo $n;
+    /** @var bool|null $n */ $n;
+    echo $n;
+    /** @var int|\stdClass $n */ $n;
+    echo $n;
+    /** @var scalar $n */ $n;
+    echo $n;
 
-?>
+    /** @var safehtml-string $n */ $n;
+    echo $n;
+    /** @var string|safehtml-string $n */ $n;
+    echo $n;
 
-<?= $n ?>
-<?= $s ?>
-<?= $b ?>
-<?= $t ?>
-<?= $m ?>
-
-
-<?php
+    /** @var safehtml-string|\stdClass $n */ $n;
+    echo $n;
+    /** @var ?safehtml-string $n */ $n;
+    echo $n;
 }
