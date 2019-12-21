@@ -41,47 +41,6 @@ class EchoHtmlRule implements Rule
 		return Node\Stmt\Echo_::class;
 	}
 
-    /** @return array<int,RuleError> */
-    private function processTypeInternal(Expr $expr, int $key, Type $type)
-    {
-        if ($type instanceof ErrorType)
-            return [];
-        if ($type instanceof IntegerType ||
-            $type instanceof BooleanType ||
-            $type instanceof NullType ||
-            $type instanceof ConstantStringType)
-            return [];
-
-        if ($type instanceof SafeHtmlType)
-            return [];
-
-        if ($type instanceof ObjectType){
-            return [];
-        }
-
-        $messages = [];
-
-        if ($type instanceof UnionType){
-            $innerTypes = $type->getTypes();
-            foreach ($innerTypes as $innerType){
-                $msgs = $this->processTypeInternal($expr, $key, $innerType);
-                if ($msgs)
-                    $messages += $msgs;
-            }
-            return $messages;
-        }
-
-        if ($type->toString() instanceof StringType){
-            $messages[] = RuleErrorBuilder::message(sprintf(
-                'Parameter #%d (%s) is not safehtml-string.',
-                $key + 1,
-                $type->describe(VerbosityLevel::value())
-            ))->line($expr->getLine())->build();
-        }
-
-        return $messages;
-    }
-
 	public function processNode(Node $node, Scope $scope): array
 	{
 		$messages = [];
