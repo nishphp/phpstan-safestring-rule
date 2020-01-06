@@ -1,7 +1,6 @@
 {
     "name": "nish/phpstan-echo-html-rule",
     "description": "htmlspecialchars checker for PHPStan",
-    "homepage": "https://github.com/nishimura/phpstan-echo-html-rule",
     "require": {
         "php": "~7.1",
         "nikic/php-parser": "^4.0",
