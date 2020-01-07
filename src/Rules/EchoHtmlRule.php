@@ -20,7 +20,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\VerbosityLevel;
-use Nish\PHPStan\Type\SafeHtmlType;
+use Nish\PHPStan\Type\SafeHtmlStringType;
 
 /**
  * @implements \PHPStan\Rules\Rule<\PhpParser\Node\Stmt\Echo_>
@@ -65,7 +65,7 @@ class EchoHtmlRule implements Rule
                 $type instanceof ConstantStringType)
                 continue;
 
-            if ($type instanceof SafeHtmlType)
+            if ($type instanceof SafeHtmlStringType)
                 continue;
 
             if ($type instanceof ObjectType){
@@ -75,7 +75,7 @@ class EchoHtmlRule implements Rule
             if ($type instanceof UnionType){
                 $innerTypes = $type->getTypes();
                 foreach ($innerTypes as $innerType){
-                    if ($innerType instanceof SafeHtmlType ||
+                    if ($innerType instanceof SafeHtmlStringType ||
                         $innerType instanceof ConstantStringType)
                         continue;
 

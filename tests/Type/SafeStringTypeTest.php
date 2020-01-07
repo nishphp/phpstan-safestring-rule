@@ -26,27 +26,27 @@ class StringTypeTest extends TestCase
 	{
 		return [
 			[
-				new SafeHtmlType(),
+				new SafeStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
 				TrinaryLogic::createYes(),
 			],
 			[
-				new SafeHtmlType(),
+				new SafeStringType(),
 				new ConstantStringType('foo'),
 				TrinaryLogic::createYes(),
 			],
 			[
-				new SafeHtmlType(),
+				new SafeStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlType(),
+				new SafeStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlType(),
+				new SafeStringType(),
 				new UnionType([
                     new StringType(),
                     new IntegerType(),
@@ -54,8 +54,8 @@ class StringTypeTest extends TestCase
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlType(),
-				new SafeHtmlType(),
+				new SafeStringType(),
+				new SafeStringType(),
 				TrinaryLogic::createYes(),
 			],
 		];
@@ -64,7 +64,7 @@ class StringTypeTest extends TestCase
 	/**
 	 * @dataProvider dataIsSuperTypeOf
 	 */
-	public function testIsSuperTypeOf(SafeHtmlType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testIsSuperTypeOf(SafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->isSuperTypeOf($otherType);
 		$this->assertSame(
@@ -78,7 +78,7 @@ class StringTypeTest extends TestCase
 	{
         return [
             [
-			new SafeHtmlType(),
+			new SafeStringType(),
 			new IntersectionType([
 				new ObjectType(ClassWithToString::class),
 				new HasPropertyType('foo'),
@@ -86,12 +86,12 @@ class StringTypeTest extends TestCase
 			TrinaryLogic::createNo(),
             ],
             [
-                new SafeHtmlType(),
+                new SafeStringType(),
                 new ClassStringType(),
                 TrinaryLogic::createYes(),
             ],
             [
-                new SafeHtmlType(),
+                new SafeStringType(),
                 new StringType(),
                 TrinaryLogic::createYes(),
             ],
@@ -100,11 +100,11 @@ class StringTypeTest extends TestCase
 
 	/**
 	 * @dataProvider dataAccepts
-	 * @param \Nish\PHPStan\Type\SafeHtmlType $type
+	 * @param \Nish\PHPStan\Type\SafeStringType $type
 	 * @param Type $otherType
 	 * @param TrinaryLogic $expectedResult
 	 */
-	public function testAccepts(SafeHtmlType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testAccepts(SafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->accepts($otherType, true);
 		$this->assertSame(
@@ -116,7 +116,7 @@ class StringTypeTest extends TestCase
 
     public function testIsCallable()
     {
-        $type = new SafeHtmlType();
+        $type = new SafeStringType();
         $ret = $type->isCallable();
         $this->assertSame(
             $ret->describe(),
@@ -127,7 +127,7 @@ class StringTypeTest extends TestCase
 
     public function testToInt()
     {
-        $type = new SafeHtmlType();
+        $type = new SafeStringType();
         $ret = $type->toInteger();
         $this->assertSame(
             $ret->describe(VerbosityLevel::precise()),
@@ -138,7 +138,7 @@ class StringTypeTest extends TestCase
 
     public function testToFloat()
     {
-        $type = new SafeHtmlType();
+        $type = new SafeStringType();
         $ret = $type->toFloat();
         $this->assertSame(
             $ret->describe(VerbosityLevel::precise()),
@@ -148,7 +148,7 @@ class StringTypeTest extends TestCase
     }
     public function testToArray()
     {
-        $type = new SafeHtmlType();
+        $type = new SafeStringType();
         $ret = $type->toArray();
         $this->assertSame(
             $ret->describe(VerbosityLevel::precise()),

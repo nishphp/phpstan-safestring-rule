@@ -2,7 +2,6 @@
 
 namespace Nish\PHPStan\Type;
 
-use PHPStan\Broker\Broker;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Type;
 use PHPStan\Type\ErrorType;
@@ -13,11 +12,11 @@ use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Reflection\ClassMemberAccessAnswerer;
 
-class SafeHtmlType extends StringType
+class SafeStringType extends StringType
 {
 	public function describe(VerbosityLevel $level): string
 	{
-		return 'safehtml-string';
+		return 'safe-string';
 	}
 
 	public function accepts(Type $type, bool $strictTypes): TrinaryLogic

@@ -6,7 +6,8 @@ use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\Type;
-use Nish\PHPStan\Type\SafeHtmlType;
+use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\SafeHtmlStringType;
 
 class TypeNodeResolverExtension implements \PHPStan\PhpDoc\TypeNodeResolverExtension
 {
@@ -14,7 +15,10 @@ class TypeNodeResolverExtension implements \PHPStan\PhpDoc\TypeNodeResolverExten
 	{
 		if ($typeNode instanceof IdentifierTypeNode) {
             if ($typeNode->name === 'safehtml-string'){
-                return new SafeHtmlType();
+                return new SafeHtmlStringType();
+            }
+            if ($typeNode->name === 'safe-string'){
+                return new SafeStringType();
             }
         }
 
