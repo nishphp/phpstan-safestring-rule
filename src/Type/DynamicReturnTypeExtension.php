@@ -38,7 +38,9 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
     private function parseArgs($func)
     {
         if (is_array($func)){
-            $this->func = $func;
+            $this->func = [];
+            foreach ($func as $f)
+                $this->func[$f] = $f;
             return;
         }
 
@@ -80,12 +82,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
             return $name === $this->func;
         }
 
-        foreach ($this->func as $func){
-            if ($name === $func)
-                return true;
-        }
-
-        return false;
+        return isset($this->func[$name]);
     }
 
 	public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): Type
