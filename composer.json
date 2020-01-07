@@ -27,7 +27,8 @@
             "tests/"
         ],
         "files": [
-            "tests/Rules/data/echohtml.php"
+            "tests/Rules/data/echohtml.php",
+            "tests/Rules/data/safestringcall.php"
         ]
     }
 }

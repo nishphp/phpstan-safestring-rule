@@ -1,7 +1,7 @@
-rules:
-  - Nish\PHPStan\Rules\EchoHtmlRule
 services:
   -
+    class: Nish\PHPStan\Rules\EchoHtmlRule
+    tags: [phpstan.rules.rule]
+  -
     class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
-    tags:
-      - phpstan.phpDoc.typeNodeResolverExtension    
+    tags: [phpstan.phpDoc.typeNodeResolverExtension]
