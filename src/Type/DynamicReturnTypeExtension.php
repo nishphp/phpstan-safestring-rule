@@ -35,7 +35,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	}
 
     /** @param string|array<string> $func */
-    private function parseArgs($func)
+    private function parseArgs($func): void
     {
         if (is_array($func)){
             $this->func = [];
