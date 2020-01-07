@@ -1,6 +1,6 @@
 {
-    "name": "nish/phpstan-echo-html-rule",
-    "description": "htmlspecialchars checker for PHPStan",
+    "name": "nish/phpstan-safestring-rule",
+    "description": "String Utility Extension for PHPStan",
     "require": {
         "php": "~7.1",
         "nikic/php-parser": "^4.0",
