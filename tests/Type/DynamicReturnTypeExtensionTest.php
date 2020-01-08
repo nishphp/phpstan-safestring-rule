@@ -19,7 +19,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 {
     public function testFunction()
     {
-        $ext = new DynamicReturnTypeExtension(SafeHtmlStringType::class, 'h');
+        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
 
         $ref = $this->createMock(FunctionReflection::class);
         $ref->method('getName')->willReturn('h');
@@ -38,7 +38,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 
     public function testFunctionAccept()
     {
-        $ext = new DynamicReturnTypeExtension(SafeHtmlStringType::class, 'h');
+        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new StringType());
@@ -56,7 +56,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 
     public function testFunctionNotAccept()
     {
-        $ext = new DynamicReturnTypeExtension(SafeHtmlStringType::class, 'h');
+        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new IntegerType());
@@ -76,7 +76,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testFunctions()
     {
         $ext = new DynamicReturnTypeExtension(
-            SafeHtmlStringType::class, ['h', 'raw']);
+            ['h', 'raw'], SafeHtmlStringType::class);
 
         $ref = $this->createMock(FunctionReflection::class);
         $ref->method('getName')->willReturn('h');
@@ -94,7 +94,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethod()
     {
         $ext = new DynamicReturnTypeExtension(
-            SafeHtmlStringType::class, 'App\Html::checkbox');
+            'App\Html::checkbox', SafeHtmlStringType::class);
 
         $this->assertEquals('App\Html', $ext->getClass());
 
@@ -113,7 +113,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethodAccept()
     {
         $ext = new DynamicReturnTypeExtension(
-            SafeHtmlStringType::class, 'App\Html::checkbox');
+            'App\Html::checkbox', SafeHtmlStringType::class);
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new ConstantStringType('foo'));
@@ -132,7 +132,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethodNotAccept()
     {
         $ext = new DynamicReturnTypeExtension(
-            SafeHtmlStringType::class, 'App\Html::checkbox');
+            'App\Html::checkbox', SafeHtmlStringType::class);
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new ObjectType('stdClass'));
@@ -152,7 +152,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testStaticMethod()
     {
         $ext = new DynamicReturnTypeExtension(
-            SafeHtmlStringType::class, 'App\Html::checkbox');
+            'App\Html::checkbox', SafeHtmlStringType::class);
 
         $this->assertEquals('App\Html', $ext->getClass());
 

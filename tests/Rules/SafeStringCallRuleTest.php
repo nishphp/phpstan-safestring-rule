@@ -32,7 +32,6 @@ class SafeStringCallRuleTest extends RuleTestCase
 
 	public function testSafeStringCallRule(): void
 	{
-        require_once(__DIR__ . '/data/safestringcall.php');
 		$this->analyse([__DIR__ . '/data/safestringcall.php'], [
 			[
 				'Parameter #1 (string) is not safe-string.',
