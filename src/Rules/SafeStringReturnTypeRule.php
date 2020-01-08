@@ -28,6 +28,7 @@ class SafeStringReturnTypeRule implements Rule
     /** @var array<string,string> funcs,methods */
     private $patterns = [];
 
+    /** @param array<int,string> $patterns */
 	public function __construct(array $patterns, FunctionReturnTypeCheck $returnTypeCheck)
 	{
         foreach ($patterns as $p)
@@ -66,6 +67,9 @@ class SafeStringReturnTypeRule implements Rule
             return [];
 
         $returnValue = $node->expr;
+        if (!$returnValue){
+            return [];
+        }
         $returnValueType = $scope->getType($returnValue);
 
         if (!RuleHelper::accepts($returnValueType)){

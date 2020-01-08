@@ -35,3 +35,7 @@ class ReturnTypes
         return 'const string' . $input;
     }
 }
+
+/** @return ?string */
+function getQueryPass(?string $sql){
+}
