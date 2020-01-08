@@ -28,7 +28,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
     private $class;
 
     /** @param string|array<string> $func */
-	public function __construct(string $type, $func)
+	public function __construct($func, string $type = SafeStringType::class)
 	{
         $this->type = new $type;
         $this->parseArgs($func);
