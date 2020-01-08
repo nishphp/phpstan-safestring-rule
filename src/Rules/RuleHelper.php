@@ -10,6 +10,8 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\VerbosityLevel;
@@ -50,6 +52,35 @@ class RuleHelper
         if ($type->toString() instanceof StringType)
             return false;
 
+        return true;
+    }
+
+    public static function isSafeArray(ArrayType $type): bool
+    {
+        if ($type instanceof ConstantArrayType){
+            foreach ($type->getValueTypes() as $innerType){
+                if (!self::accepts($innerType))
+                    return false;
+            }
+            return true;
+        }
+
+        return self::accepts($type->getItemType());
+    }
+
+    public static function isSafeUnionArray(UnionType $type): bool
+    {
+        foreach ($type->getTypes() as $innerType){
+            if ($innerType instanceof UnionType){
+                if (!self::isSafeUnionArray($innerType))
+                    return false;
+            }elseif ($innerType instanceof ArrayType){
+                if (!self::isSafeArray($innerType))
+                    return false;
+            }else{
+                return false;
+            }
+        }
         return true;
     }
 }

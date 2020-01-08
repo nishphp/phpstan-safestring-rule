@@ -1,3 +1,6 @@
+parameters:
+  scopeClass: Nish\PHPStan\Analyser\MutatingScope
+
 services:
   -
     class: Nish\PHPStan\Rules\EchoHtmlRule

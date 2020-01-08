@@ -10,8 +10,11 @@ use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\UnionType;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Rules\RuleHelper;
 
 class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
@@ -37,12 +40,24 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
             !$glueType instanceof SafeStringType)
             return new StringType();
 
-        if (!$piecesType instanceof ArrayType)
+        if ($piecesType instanceof UnionType){
+            if (RuleHelper::isSafeUnionArray($piecesType))
+                return new SafeStringType();
+            else
+                return new StringType();
+        }
+
+        if (!$piecesType instanceof ArrayType){
+
+            $toArray = $piecesType->toArray();
+        }else{
+            $toArray = $piecesType;
+        }
+
+        if (!$toArray instanceof ArrayType)
             return new StringType();
 
-        $itemType = $piecesType->getItemType();
-        if ($itemType instanceof ConstantStringType ||
-            $itemType instanceof SafeStringType)
+        if (RuleHelper::isSafeArray($toArray))
             return new SafeStringType();
 
         return new StringType();

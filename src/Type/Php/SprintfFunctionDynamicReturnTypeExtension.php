@@ -12,6 +12,7 @@ use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Rules\RuleHelper;
 
 class SprintfFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
 {
@@ -37,14 +38,10 @@ class SprintfFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\Sprint
 				$isConstantOnly = false;
             }
 
-			if ($argType instanceof StringType &&
-                !($argType instanceof SafeStringType ||
-                  $argType instanceof ConstantStringType)
-                ) {
+            if (!RuleHelper::accepts($argType))
                 $isSafe = false;
-			}
-
 		}
+
         if (!$isConstantOnly){
             if ($isSafe)
                 return new SafeStringType();
@@ -60,5 +57,4 @@ class SprintfFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\Sprint
 
 		return $scope->getTypeFromValue($value);
 	}
-
 }
