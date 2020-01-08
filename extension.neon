@@ -5,3 +5,21 @@ services:
   -
     class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
     tags: [phpstan.phpDoc.typeNodeResolverExtension]
+  -
+    class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
+    tags: [phpstan.phpDoc.typeNodeResolverExtension]
+  -
+    class: Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
+    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+  -
+    class: Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension
+    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+
+  broker:
+    class: PHPStan\Broker\Broker
+    factory: @customizedBrokerFactory::create
+    autowired:
+      - PHPStan\Broker\Broker
+
+  customizedBrokerFactory:
+    class: Nish\PHPStan\Broker\BrokerFactory

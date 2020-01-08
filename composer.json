@@ -4,11 +4,12 @@
     "require": {
         "php": "~7.1",
         "nikic/php-parser": "^4.0",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "^0.12.4"
     },
     "require-dev": {
         "phpstan/phpstan-phpunit": "^0.12",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0",
+        "nette/di": "^3.0"
     },
     "license": "MIT",
     "authors": [
