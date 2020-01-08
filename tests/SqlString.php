@@ -11,4 +11,8 @@ class SqlString
     }
 
     public static function create(\PDO $conn, string $sql, array $params): self{}
+
+    public function getRaw(): string {
+        return 'a';
+    }
 }

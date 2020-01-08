@@ -5,17 +5,12 @@ namespace Nish\PHPStan\Rules;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Testing\RuleTestCase;
-use PHPStan\PhpDoc\PhpDocNodeResolver;
-use PHPStan\PhpDoc\TypeNodeResolver;
 
 /**
  * @extends \PHPStan\Testing\RuleTestCase<SafeStringCallRule>
  */
 class SafeStringCallRuleTest extends RuleTestCase
 {
-    /** array<string,int> */
-    private $patterns = [];
-
     /** @override */
 	protected function getRule(): Rule
 	{
