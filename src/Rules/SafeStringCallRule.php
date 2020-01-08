@@ -13,7 +13,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\StringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\VerbosityLevel;
-use Nish\PHPStan\Type\SafeHtmlStringType;
 
 /**
  * @implements \PHPStan\Rules\Rule<\PhpParser\Node>
