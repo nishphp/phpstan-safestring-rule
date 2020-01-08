@@ -8,7 +8,6 @@ use PHPStan\Type\ErrorType;
 use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\CompoundType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Reflection\ClassMemberAccessAnswerer;
 
@@ -21,12 +20,16 @@ class SafeStringType extends StringType
 
 	public function accepts(Type $type, bool $strictTypes): TrinaryLogic
 	{
-		if ($type instanceof CompoundType) {
-			return $type->isAcceptedBy($this, $strictTypes);
+		if ($type instanceof self) {
+			return TrinaryLogic::createYes();
 		}
 
-		if ($type instanceof StringType) {
+		if ($type instanceof ConstantStringType) {
 			return TrinaryLogic::createYes();
+		}
+
+		if ($type instanceof CompoundType) {
+			return $type->isAcceptedBy($this, $strictTypes);
 		}
 
 		return TrinaryLogic::createNo();
@@ -39,10 +42,6 @@ class SafeStringType extends StringType
 		}
 
 		if ($type instanceof ConstantStringType) {
-			return TrinaryLogic::createYes();
-		}
-
-		if ($type instanceof ClassStringType) {
 			return TrinaryLogic::createYes();
 		}
 

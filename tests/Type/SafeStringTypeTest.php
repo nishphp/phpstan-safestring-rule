@@ -28,7 +28,7 @@ class StringTypeTest extends TestCase
 			[
 				new SafeStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
-				TrinaryLogic::createYes(),
+				TrinaryLogic::createNo(),
 			],
 			[
 				new SafeStringType(),
@@ -88,11 +88,21 @@ class StringTypeTest extends TestCase
             [
                 new SafeStringType(),
                 new ClassStringType(),
+                TrinaryLogic::createNo(),
+            ],
+            [
+                new SafeStringType(),
+                new ConstantStringType('foo'),
                 TrinaryLogic::createYes(),
             ],
             [
                 new SafeStringType(),
                 new StringType(),
+                TrinaryLogic::createNo(),
+            ],
+            [
+                new SafeStringType(),
+                new SafeStringType(),
                 TrinaryLogic::createYes(),
             ],
         ];
