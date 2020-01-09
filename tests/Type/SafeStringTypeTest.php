@@ -14,6 +14,7 @@ use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\FloatType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\ObjectType;
@@ -141,7 +142,7 @@ class StringTypeTest extends TestCase
         $ret = $type->toInteger();
         $this->assertSame(
             $ret->describe(VerbosityLevel::precise()),
-            (new ErrorType())->describe(VerbosityLevel::precise()),
+            (new IntegerType())->describe(VerbosityLevel::precise()),
             sprintf('%s -> toInteger()', $type->describe(VerbosityLevel::precise()))
         );
     }
@@ -152,7 +153,7 @@ class StringTypeTest extends TestCase
         $ret = $type->toFloat();
         $this->assertSame(
             $ret->describe(VerbosityLevel::precise()),
-            (new ErrorType())->describe(VerbosityLevel::precise()),
+            (new FloatType())->describe(VerbosityLevel::precise()),
             sprintf('%s -> toFloat()', $type->describe(VerbosityLevel::precise()))
         );
     }

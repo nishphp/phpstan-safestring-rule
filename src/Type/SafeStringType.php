@@ -63,14 +63,6 @@ class SafeStringType extends StringType
 		throw new \PHPStan\ShouldNotHappenException();
 	}
 
-	public function toInteger(): Type
-	{
-		return new ErrorType();
-	}
-	public function toFloat(): Type
-	{
-		return new ErrorType();
-	}
 	public function toArray(): Type
 	{
 		return new ErrorType();
