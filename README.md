@@ -1,6 +1,6 @@
-# PHPStan Echo Html Rule Extension
+# PHPStan SafeString Rule Extension
 
-This package is a PHPStan extension for checking whether htmlspecialchars is called from a pure PHP template.
+This package is a PHPStan extension for checking unsafe string, eg. Check calling echo without calling htmlspecialchars,  check calling database query without using prepared statement
 
 ## Install
 
@@ -16,7 +16,15 @@ Add to `phpstan.neon`
 
 ```yaml
 includes:
-  - vendor/nish/phpstan-echo-html-rule/rules.neon
+  - vendor/nish/phpstan-safestring-rule/extension.neon
+
+services:
+  -
+    class: Nish\PHPStan\Rules\EchoHtmlRule
+    tags: [phpstan.rules.rule]
+  -
+    factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension([htmlspecialchars, h, raw])
+    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
 ```
 
 If your `composer.json` is:
@@ -101,7 +109,6 @@ Since safehtml-string is a virtual type, it can be fixed by adding a helper func
 
 /**
  * @param int|string|null $input
- * @return safehtml-string
  */
 function h($input)
 {
@@ -110,7 +117,6 @@ function h($input)
 
 /**
  * @param int|string|null $input
- * @return safehtml-string
  */
 function raw($input)
 {
@@ -176,3 +182,4 @@ class TypeHtml {
 ```
 
 This is no error.
+
