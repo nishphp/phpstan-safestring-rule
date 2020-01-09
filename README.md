@@ -5,7 +5,7 @@ This package is a PHPStan extension for checking unsafe string, eg. Check callin
 ## Install
 
 ```
-composer require --dev nish/phpstan-echo-html-rule
+composer require --dev nish/phpstan-safestring-rule
 ```
 
 
