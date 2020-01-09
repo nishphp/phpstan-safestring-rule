@@ -367,7 +367,7 @@ class ProductPage
 
 ### Tips
 
-To control to return type, set as follows.
+Add return type rules:
 
     factory: Nish\PHPStan\Rules\SafeStringReturnTypeRule([
         App\Db\Utils::getSafeConditionString,
