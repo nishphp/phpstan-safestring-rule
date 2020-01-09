@@ -1,6 +1,6 @@
 {
     "name": "nish/phpstan-safestring-rule",
-    "description": "Check Safe String for PHPStan",
+    "description": "Extension of PHPStan: Warn about unsafe strings",
     "require": {
         "php": "~7.1",
         "nikic/php-parser": "^4.0",
