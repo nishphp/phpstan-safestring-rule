@@ -14,12 +14,14 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 {
 	public function getType(Expr $node): Type
 	{
-        $type = $this->resolveTypeExtension($node);
+        $parentResult = parent::getType($node);
+        if (!$parentResult instanceof SafeStringType){
+            $type = $this->resolveTypeExtension($node);
 
-        if ($type !== null)
-            return $type;
-
-        return parent::getType($node);
+            if ($type !== null)
+                return $type;
+        }
+        return $parentResult;
     }
 
     private function resolveTypeExtension(Expr $node): ?Type
@@ -38,17 +40,8 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 
         $leftStringType = $this->getType($left)->toString();
         $rightStringType = $this->getType($right)->toString();
-        if (TypeCombinator::union(
-            $leftStringType,
-            $rightStringType
-        ) instanceof ErrorType) {
-            return new ErrorType();
-        }
 
-        if ($leftStringType instanceof SafeStringType && RuleHelper::accepts($rightStringType))
-            return new SafeStringType();
-
-        if ($rightStringType instanceof SafeStringType && RuleHelper::accepts($leftStringType))
+        if (RuleHelper::accepts($leftStringType) && RuleHelper::accepts($rightStringType))
             return new SafeStringType();
 
         return null;
