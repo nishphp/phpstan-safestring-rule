@@ -14,7 +14,7 @@ use PHPStan\Type\Type;
 use Nish\PHPStan\Type\SafeStringType;
 use Nish\PHPStan\Rules\RuleHelper;
 
-class SprintfFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
+class ReplaceFunctionsDynamicReturnTypeExtension extends \PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension
 {
 	public function getTypeFromFunctionCall(
 		FunctionReflection $functionReflection,

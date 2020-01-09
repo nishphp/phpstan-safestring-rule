@@ -29,7 +29,9 @@ class BrokerFactory extends \PHPStan\Broker\BrokerFactory
                 if ($s instanceof \PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension){
                     $container->removeService($tag);
                     $container->addService($tag, new \Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension());
-                    break;
+                }else if ($s instanceof \PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension){
+                    $container->removeService($tag);
+                    $container->addService($tag, new \Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension());
                 }
             }
         }, $container, \PHPStan\DependencyInjection\Nette\NetteContainer::class)->__invoke();

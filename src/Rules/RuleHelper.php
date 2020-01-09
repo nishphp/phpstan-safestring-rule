@@ -2,6 +2,8 @@
 
 namespace Nish\PHPStan\Rules;
 
+use PhpParser\Node\Expr\FuncCall;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\Type;
 use PHPStan\Type\IntegerType;
@@ -11,6 +13,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericObjectType;
@@ -82,5 +85,28 @@ class RuleHelper
             }
         }
         return true;
+    }
+
+	public static function isSafeAllArgs(FuncCall $functionCall, Scope $scope): bool
+    {
+        $isSafe = true;
+        $isConstantOnly = true;
+		foreach ($functionCall->args as $arg) {
+			$argType = $scope->getType($arg->value);
+			if ($argType instanceof ConstantScalarType) {
+                // transfer parent class
+			}else{
+				$isConstantOnly = false;
+            }
+
+            if (!RuleHelper::accepts($argType))
+                $isSafe = false;
+		}
+
+        // $isConstantOnly: true, $isSafe: true => transfer parent class (constant string?)
+        // $isConstantOnly: true, $isSafe: false => nothing
+        // $isConstantOnly: false, $isSafe: true => safe string
+        // $isConstantOnly: false, $isSafe: false => transfer parent class (string?)
+        return !$isConstantOnly && $isSafe;
     }
 }

@@ -15,6 +15,9 @@ services:
     class: Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
   -
+    class: Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension
+    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+  -
     class: Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
 
