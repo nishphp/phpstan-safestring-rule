@@ -17,7 +17,11 @@ class SafeHtmlStringType extends SafeStringType
 
 	public function accepts(Type $type, bool $strictTypes): TrinaryLogic
 	{
-		if ($type instanceof StringType) {
+		if ($type instanceof self) {
+			return TrinaryLogic::createYes();
+		}
+
+		if ($type instanceof ClassStringType) {
 			return TrinaryLogic::createYes();
 		}
 

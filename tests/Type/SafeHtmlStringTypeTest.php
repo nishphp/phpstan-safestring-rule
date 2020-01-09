@@ -93,7 +93,7 @@ class SafeHtmlStringTypeTest extends TestCase
             [
                 new SafeHtmlStringType(),
                 new StringType(),
-                TrinaryLogic::createYes(),
+                TrinaryLogic::createNo(),
             ],
         ];
 	}
