@@ -221,7 +221,7 @@ If you want to specify a method instead of a function:
 
 Cannot specify more than one at a time.
 
-## Use Custom Type
+## Use safe-string Custom Type
 
 If you have the following database access program
 
