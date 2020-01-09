@@ -3,13 +3,8 @@
 namespace Nish\PHPStan\Type\Php;
 
 use PhpParser\Node\Expr\FuncCall;
-use PHPStan\Broker\BrokerFactory;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Type\ConstantScalarType;
-use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\DynamicFunctionReturnTypeExtension;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Nish\PHPStan\Type\SafeStringType;
 use Nish\PHPStan\Rules\RuleHelper;
