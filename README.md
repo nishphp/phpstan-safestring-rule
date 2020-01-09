@@ -1,6 +1,6 @@
 # PHPStan SafeString Rule Extension
 
-This package is a PHPStan extension for checking unsafe string, eg. Check calling echo without calling htmlspecialchars,  check calling database query without using prepared statement
+This package is a PHPStan extension for checking unsafe string, e.g. Check calling echo without calling htmlspecialchars,  check calling database query without using prepared statement.
 
 ## Install
 
@@ -27,7 +27,7 @@ services:
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
 ```
 
-If your `composer.json` is:
+ `composer.json` is:
 
 ```json
     "autoload": {
@@ -98,7 +98,7 @@ The execution result of phpstan in this case is as followings:
  [ERROR] Found 2 errors                                      
 ```
 
-You can not call echo the string type directly.
+Then, can not call echo the string type directly.
 
 Since safehtml-string is a virtual type, it can be fixed by adding a helper function.
 
@@ -207,7 +207,7 @@ class TypeHtml {
 
 This is no error.
 
-If you want to specify a method instead of a function:
+When used for methods instead of functions:
 
 ```yaml
   -
@@ -262,7 +262,7 @@ class ProductDb
 
 `pdo->query()` is not secure.
 
-If the class displayed on the screen is the following program
+If the class is the following program,
 
 ```php
 <?php
@@ -288,7 +288,7 @@ class ProductPage
 
 I want an error to be displayed.
 
-You can achieve that by writing the following settings to phpstan.neon.
+Achieve that by writing the following settings to phpstan.neon.
 
 ```yaml
 services:
@@ -317,7 +317,7 @@ Run phpstan.
  [ERROR] Found 1 error
 ```
 
-If you want more control, you can use the `safe-string` type.
+More control, it can use the `safe-string` type.
 
 ```php
     /**
@@ -367,7 +367,7 @@ class ProductPage
 
 ### Tips
 
-If you want to restrict the return type, set as follows.
+To control to return type, set as follows.
 
     factory: Nish\PHPStan\Rules\SafeStringReturnTypeRule([
         App\Db\Utils::getSafeConditionString,
