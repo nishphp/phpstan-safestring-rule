@@ -20,6 +20,9 @@ services:
   -
     class: Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+  -
+    class: Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension
+    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
 
   broker:
     class: PHPStan\Broker\Broker
