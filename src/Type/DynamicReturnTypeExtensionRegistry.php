@@ -21,12 +21,12 @@ class DynamicReturnTypeExtensionRegistry extends \PHPStan\Type\DynamicReturnType
         return $this->parent->getDynamicStaticMethodReturnTypeExtensionsForClass($className);
     }
 
-	/**
-	 * @override
-	 * @return \PHPStan\Type\DynamicFunctionReturnTypeExtension[]
-	 */
-	public function getDynamicFunctionReturnTypeExtensions(): array
-	{
+    /**
+     * @override
+     * @return \PHPStan\Type\DynamicFunctionReturnTypeExtension[]
+     */
+    public function getDynamicFunctionReturnTypeExtensions(): array
+    {
         static $extensions;
         if ($extensions === null){
             // replace default extension
@@ -35,6 +35,6 @@ class DynamicReturnTypeExtensionRegistry extends \PHPStan\Type\DynamicReturnType
                 new \Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension(),
             ];
         }
-		return array_merge($extensions, $this->parent->getDynamicFunctionReturnTypeExtensions());
-	}
+        return array_merge($extensions, $this->parent->getDynamicFunctionReturnTypeExtensions());
+    }
 }
