@@ -23,12 +23,3 @@ services:
   -
     class: Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
-
-  broker:
-    class: PHPStan\Broker\Broker
-    factory: @customizedBrokerFactory::create
-    autowired:
-      - PHPStan\Broker\Broker
-
-  customizedBrokerFactory:
-    class: Nish\PHPStan\Broker\BrokerFactory
