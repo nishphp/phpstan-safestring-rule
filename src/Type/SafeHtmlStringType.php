@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Nish\PHPStan\Type;
 
 use PHPStan\TrinaryLogic;
-use PHPStan\Type\VerbosityLevel;
-use PHPStan\Type\Type;
 use PHPStan\Type\ClassStringType;
-use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
+use PHPStan\Type\VerbosityLevel;
 
 class SafeHtmlStringType extends SafeStringType
 {
+
 	public function describe(VerbosityLevel $level): string
 	{
 		return 'safehtml-string';
@@ -25,8 +27,8 @@ class SafeHtmlStringType extends SafeStringType
 			return TrinaryLogic::createYes();
 		}
 
-        return parent::accepts($type, $strictTypes);
-    }
+		return parent::accepts($type, $strictTypes);
+	}
 
 	public function isSuperTypeOf(Type $type): TrinaryLogic
 	{
@@ -38,7 +40,7 @@ class SafeHtmlStringType extends SafeStringType
 			return TrinaryLogic::createYes();
 		}
 
-        return parent::isSuperTypeOf($type);
+		return parent::isSuperTypeOf($type);
 	}
 
 
@@ -51,4 +53,5 @@ class SafeHtmlStringType extends SafeStringType
 	{
 		return new self();
 	}
+
 }

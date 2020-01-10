@@ -1,15 +1,17 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type\Php;
 
+use Nish\PHPStan\Rules\RuleHelper;
+use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use Nish\PHPStan\Type\SafeStringType;
-use Nish\PHPStan\Rules\RuleHelper;
 
 class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
@@ -26,9 +28,11 @@ class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTyp
 	): Type
 	{
 		$argType = $scope->getType($functionCall->args[0]->value);
-        if (RuleHelper::accepts($argType))
-            return new SafeStringType();
+		if (RuleHelper::accepts($argType)) {
+			return new SafeStringType();
+		}
 
-        return new StringType();
+		return new StringType();
 	}
+
 }

@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Nish\PHPStan\Type;
 
-use PHPStan\TrinaryLogic;
-use PHPStan\Type\Type;
-use PHPStan\Type\ErrorType;
-use PHPStan\Type\VerbosityLevel;
-use PHPStan\Type\CompoundType;
-use PHPStan\Type\StringType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Reflection\ClassMemberAccessAnswerer;
+use PHPStan\TrinaryLogic;
+use PHPStan\Type\CompoundType;
+use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\ErrorType;
+use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
+use PHPStan\Type\VerbosityLevel;
 
 class SafeStringType extends StringType
 {
+
 	public function describe(VerbosityLevel $level): string
 	{
 		return 'safe-string';
@@ -66,7 +69,7 @@ class SafeStringType extends StringType
 	public function toArray(): Type
 	{
 		return new ErrorType();
-    }
+	}
 
 	/**
 	 * @param mixed[] $properties
@@ -76,4 +79,5 @@ class SafeStringType extends StringType
 	{
 		return new self();
 	}
+
 }

@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Nish\PHPStan\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Type\ErrorType;
@@ -46,15 +46,15 @@ class EchoHtmlRule implements Rule
 				}
 			);
 
-            $type = $typeResult->getType();
+			$type = $typeResult->getType();
 
-            if (!RuleHelper::accepts($type)){
-                $messages[] = RuleErrorBuilder::message(sprintf(
-                    'Parameter #%d (%s) is not safehtml-string.',
-                    $key + 1,
-                    $type->describe(VerbosityLevel::value())
-                ))->line($expr->getLine())->build();
-            }
+			if (!RuleHelper::accepts($type)) {
+				$messages[] = RuleErrorBuilder::message(sprintf(
+					'Parameter #%d (%s) is not safehtml-string.',
+					$key + 1,
+					$type->describe(VerbosityLevel::value())
+				))->line($expr->getLine())->build();
+			}
 		}
 		return $messages;
 	}

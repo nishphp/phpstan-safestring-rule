@@ -1,20 +1,16 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Nish\PHPStan\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Rules\FunctionReturnTypeCheck;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use PHPStan\Rules\RuleLevelHelper;
-use PHPStan\Rules\FunctionReturnTypeCheck;
-use PHPStan\Type\ErrorType;
-use PHPStan\Type\Type;
-use PHPStan\Type\StringType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\VerbosityLevel;
 
 /**
@@ -22,17 +18,19 @@ use PHPStan\Type\VerbosityLevel;
  */
 class SafeStringReturnTypeRule implements Rule
 {
+
 	/** @var \PHPStan\Rules\FunctionReturnTypeCheck */
 	private $returnTypeCheck;
 
-    /** @var array<string,string> funcs,methods */
-    private $patterns = [];
+	/** @var array<string,string> funcs,methods */
+	private $patterns = [];
 
-    /** @param array<int,string> $patterns */
+	/** @param array<int,string> $patterns */
 	public function __construct(array $patterns, FunctionReturnTypeCheck $returnTypeCheck)
 	{
-        foreach ($patterns as $p)
-            $this->patterns[$p] = $p;
+		foreach ($patterns as $p) {
+			$this->patterns[$p] = $p;
+		}
 		$this->returnTypeCheck = $returnTypeCheck;
 	}
 
@@ -47,40 +45,45 @@ class SafeStringReturnTypeRule implements Rule
 			return [];
 		}
 
-		if ($scope->isInAnonymousFunction())
-            return [];
+		if ($scope->isInAnonymousFunction()) {
+			return [];
+		}
 
-        $function = $scope->getFunction();
+		$function = $scope->getFunction();
 
-        if ($function instanceof MethodReflection) {
-            $name = sprintf('%s::%s',
-                           $function->getDeclaringClass()->getDisplayName(),
-                           $function->getName());
-            $msg = sprintf('Method %s()', $name);
+		if ($function instanceof MethodReflection) {
+			$name = sprintf(
+				'%s::%s',
+				$function->getDeclaringClass()->getDisplayName(),
+				$function->getName()
+			);
+			$msg = sprintf('Method %s()', $name);
 
-        }else{
-            $name = $function->getName();
-            $msg = sprintf('Function %s()', $name);
-        }
+		} else {
+			$name = $function->getName();
+			$msg = sprintf('Function %s()', $name);
+		}
 
-        if (!isset($this->patterns[$name]))
-            return [];
+		if (!isset($this->patterns[$name])) {
+			return [];
+		}
 
-        $returnValue = $node->expr;
-        if (!$returnValue){
-            return [];
-        }
-        $returnValueType = $scope->getType($returnValue);
+		$returnValue = $node->expr;
+		if (!$returnValue) {
+			return [];
+		}
+		$returnValueType = $scope->getType($returnValue);
 
-        if (!RuleHelper::accepts($returnValueType)){
-            return [
-                RuleErrorBuilder::message(sprintf(
-                    $msg . ' should return safe-string but returns %s.',
-                    $returnValueType->describe(VerbosityLevel::value())
-                ))->line($node->getLine())->build()
-            ];
-        }
+		if (!RuleHelper::accepts($returnValueType)) {
+			return [
+				RuleErrorBuilder::message(sprintf(
+					$msg . ' should return safe-string but returns %s.',
+					$returnValueType->describe(VerbosityLevel::value())
+				))->line($node->getLine())->build(),
+			];
+		}
 
-        return [];
+		return [];
 	}
+
 }
