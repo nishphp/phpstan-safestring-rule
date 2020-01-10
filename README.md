@@ -100,7 +100,7 @@ The execution result of phpstan in this case is as followings:
 
 Then, can not call echo the string type directly.
 
-Since safehtml-string is a virtual type, it can be fixed by adding a helper function.
+`safehtml-string` is a virtual type, it can be fixed by adding a helper function.
 
 `src/functions.php`:
 
