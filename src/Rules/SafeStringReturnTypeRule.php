@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Rules\FunctionReturnTypeCheck;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\VerbosityLevel;
@@ -19,19 +18,15 @@ use PHPStan\Type\VerbosityLevel;
 class SafeStringReturnTypeRule implements Rule
 {
 
-	/** @var \PHPStan\Rules\FunctionReturnTypeCheck */
-	private $returnTypeCheck;
-
 	/** @var array<string,string> funcs,methods */
 	private $patterns = [];
 
 	/** @param array<int,string> $patterns */
-	public function __construct(array $patterns, FunctionReturnTypeCheck $returnTypeCheck)
+	public function __construct(array $patterns)
 	{
 		foreach ($patterns as $p) {
 			$this->patterns[$p] = $p;
 		}
-		$this->returnTypeCheck = $returnTypeCheck;
 	}
 
 	public function getNodeType(): string
@@ -39,6 +34,7 @@ class SafeStringReturnTypeRule implements Rule
 		return Return_::class;
 	}
 
+	/** @return array<string|\PHPStan\Rules\RuleError> errors */
 	public function processNode(Node $node, Scope $scope): array
 	{
 		if ($scope->getFunction() === null) {
@@ -67,6 +63,8 @@ class SafeStringReturnTypeRule implements Rule
 		if (!isset($this->patterns[$name])) {
 			return [];
 		}
+
+		assert($node instanceof Return_);
 
 		$returnValue = $node->expr;
 		if (!$returnValue) {

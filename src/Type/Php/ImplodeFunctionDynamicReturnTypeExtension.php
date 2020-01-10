@@ -30,9 +30,6 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 		Scope $scope
 	): Type
 	{
-		$isSafe = true;
-		$isConstantOnly = true;
-
 		$glueType = $scope->getType($functionCall->args[0]->value);
 		$piecesType = $scope->getType($functionCall->args[1]->value);
 

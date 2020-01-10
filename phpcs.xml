@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="PHPStan">
+<ruleset name="Nish/PHPStan">
 	<rule ref="vendor/consistence/coding-standard/Consistence/ruleset.xml">
 		<exclude name="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.InvalidFormat"/>
 		<exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameAfterKeyword"/>
@@ -22,12 +22,6 @@
 	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
 	<rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
-	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowShortTernaryOperator"/>
-	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
-		<properties>
-			<property name="rootNamespaces" type="array" value="compiler/src =>PHPStan\Compiler,src=>PHPStan,tests/PHPStan=>PHPStan"/>
-		</properties>
-	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
 	<rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
 	<rule ref="SlevomatCodingStandard.Operators.RequireCombinedAssignmentOperator"/>
@@ -36,7 +30,6 @@
 	<rule ref="SlevomatCodingStandard.Classes.TraitUseSpacing"/>
 	<rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
 	<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
-	<!--<rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/>-->
 	<rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
 	<rule ref="SlevomatCodingStandard.Namespaces.UselessAlias"/>
 	<rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
@@ -49,9 +42,4 @@
 		</properties>
 	</rule>
 	<exclude-pattern>tests/*/data</exclude-pattern>
-	<exclude-pattern>tests/*/traits</exclude-pattern>
-	<exclude-pattern>tests/notAutoloaded</exclude-pattern>
-	<exclude-pattern>src/Reflection/BetterReflection/BetterReflectionSourceLocatorFactory.php</exclude-pattern>
-	<exclude-pattern>src/Reflection/SignatureMap/functionMap.php</exclude-pattern>
-	<exclude-pattern>src/Reflection/SignatureMap/functionMetadata.php</exclude-pattern>
 </ruleset>

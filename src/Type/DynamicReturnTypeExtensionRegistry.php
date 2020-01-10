@@ -15,10 +15,18 @@ class DynamicReturnTypeExtensionRegistry extends \PHPStan\Type\DynamicReturnType
 		$this->parent = $parent;
 	}
 
+	/**
+	 * @override
+	 * @return \PHPStan\Type\DynamicMethodReturnTypeExtension[]
+	 */
 	public function getDynamicMethodReturnTypeExtensionsForClass(string $className): array
 	{
 		return $this->parent->getDynamicMethodReturnTypeExtensionsForClass($className);
 	}
+	/**
+	 * @override
+	 * @return \PHPStan\Type\DynamicStaticMethodReturnTypeExtension[]
+	 */
 	public function getDynamicStaticMethodReturnTypeExtensionsForClass(string $className): array
 	{
 		return $this->parent->getDynamicStaticMethodReturnTypeExtensionsForClass($className);

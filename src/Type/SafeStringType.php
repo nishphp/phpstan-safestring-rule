@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type;
 
-use PHPStan\Reflection\ClassMemberAccessAnswerer;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\CompoundType;
 use PHPStan\Type\Constant\ConstantStringType;
@@ -15,6 +14,8 @@ use PHPStan\Type\VerbosityLevel;
 
 class SafeStringType extends StringType
 {
+
+	use \PHPStan\Type\Traits\NonCallableTypeTrait;
 
 	public function describe(VerbosityLevel $level): string
 	{
@@ -53,17 +54,6 @@ class SafeStringType extends StringType
 		}
 
 		return TrinaryLogic::createNo();
-	}
-
-
-	public function isCallable(): TrinaryLogic
-	{
-		return TrinaryLogic::createNo();
-	}
-
-	public function getCallableParametersAcceptors(ClassMemberAccessAnswerer $scope): array
-	{
-		throw new \PHPStan\ShouldNotHappenException();
 	}
 
 	public function toArray(): Type

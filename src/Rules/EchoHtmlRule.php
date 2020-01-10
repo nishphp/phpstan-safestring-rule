@@ -32,10 +32,12 @@ class EchoHtmlRule implements Rule
 		return Node\Stmt\Echo_::class;
 	}
 
+	/** @return array<string|\PHPStan\Rules\RuleError> errors */
 	public function processNode(Node $node, Scope $scope): array
 	{
 		$messages = [];
 
+		assert($node instanceof Node\Stmt\Echo_);
 		foreach ($node->exprs as $key => $expr) {
 			$typeResult = $this->ruleLevelHelper->findTypeToCheck(
 				$scope,

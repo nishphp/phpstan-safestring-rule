@@ -103,9 +103,7 @@ class RuleHelper
 		$isConstantOnly = true;
 		foreach ($functionCall->args as $arg) {
 			$argType = $scope->getType($arg->value);
-			if ($argType instanceof ConstantScalarType) {
-				// transfer parent class
-			} else {
+			if (!$argType instanceof ConstantScalarType) {
 				$isConstantOnly = false;
 			}
 

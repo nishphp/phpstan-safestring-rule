@@ -41,6 +41,7 @@ class SafeStringCallRule implements Rule
 		return Node::class;
 	}
 
+	/** @return array<string|\PHPStan\Rules\RuleError> errors */
 	public function processNode(Node $node, Scope $scope): array
 	{
 		if (!$node instanceof Expr\FuncCall &&
