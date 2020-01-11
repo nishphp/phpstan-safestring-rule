@@ -120,7 +120,8 @@ class SafeStringCallRule implements Rule
 		if (!RuleHelper::accepts($type)) {
 			return [
 				RuleErrorBuilder::message(sprintf(
-					'Parameter #%d (%s) is not safe-string.',
+					'%s() Parameter #%d (%s) is not safe-string.',
+					$func,
 					$index + 1,
 					$type->describe(VerbosityLevel::value())
 				))->line($node->getLine())->build(),

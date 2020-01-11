@@ -52,7 +52,7 @@ class EchoHtmlRule implements Rule
 
 			if (!RuleHelper::accepts($type)) {
 				$messages[] = RuleErrorBuilder::message(sprintf(
-					'Parameter #%d (%s) is not safehtml-string.',
+					'echo() Parameter #%d (%s) is not safehtml-string.',
 					$key + 1,
 					$type->describe(VerbosityLevel::value())
 				))->line($expr->getLine())->build();
