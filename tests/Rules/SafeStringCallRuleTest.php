@@ -29,27 +29,27 @@ class SafeStringCallRuleTest extends RuleTestCase
 	{
 		$this->analyse([__DIR__ . '/data/safestringcall.php'], [
 			[
-				'Parameter #1 (string) is not safe-string.',
+				'query() Parameter #1 (string) is not safe-string.',
 				17,
 			],
 			[
-				'Parameter #2 (string) is not safe-string.',
+				'Nish\PHPStan\Test\SqlString::__construct() Parameter #2 (string) is not safe-string.',
 				19,
 			],
 			[
-				'Parameter #1 (string) is not safe-string.',
+				'query() Parameter #1 (string) is not safe-string.',
 				23,
 			],
 			[
-				'Parameter #1 (string|null) is not safe-string.',
+				'query() Parameter #1 (string|null) is not safe-string.',
 				27,
 			],
 			[
-				'Parameter #1 (string) is not safe-string.',
+				'Nish\PHPStan\Test\SqlString::append() Parameter #1 (string) is not safe-string.',
 				37,
 			],
 			[
-				'Parameter #2 (string) is not safe-string.',
+				'Nish\PHPStan\Test\SqlString::create() Parameter #2 (string) is not safe-string.',
 				41,
 			],
 		]);

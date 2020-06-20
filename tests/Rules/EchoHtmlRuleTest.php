@@ -39,21 +39,22 @@ class EchoHtmlRuleTest extends RuleTestCase
 	{
 		$this->analyse([__DIR__ . '/data/echohtml.php'], [
 			[
-				'Parameter #1 (string) is not safehtml-string.',
+				'echo() Parameter #1 (string) is not safehtml-string.',
 				15,
 			],
 			[
-				'Parameter #1 (string|null) is not safehtml-string.',
+				'echo() Parameter #1 (string|null) is not safehtml-string.',
 				25,
 			],
 			[
-				'Parameter #1 (bool|float|int|string) is not safehtml-string.',
+				'echo() Parameter #1 (bool|float|int|string) is not safehtml-string.',
 				31,
 			],
-			[
-				'Parameter #1 (string) is not safehtml-string.',
-				36,
-			],
+			// [
+			// 	'echo() Parameter #1 (string) is not safehtml-string.',
+			// 	36,
+			// ],
+			// checked by other rule
 		]);
 	}
 }
