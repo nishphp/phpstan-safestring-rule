@@ -23,9 +23,11 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 	 * @param \PhpParser\PrettyPrinter\Standard $printer
 	 * @param \PHPStan\Analyser\TypeSpecifier $typeSpecifier
 	 * @param \PHPStan\Rules\Properties\PropertyReflectionFinder $propertyReflectionFinder
+	 * @param \PHPStan\Parser\Parser $parser
 	 * @param \PHPStan\Analyser\ScopeContext $context
 	 * @param bool $declareStrictTypes
-	 * @param \PHPStan\Reflection\FunctionReflection|\PHPStan\Reflection\MethodReflection|null $function
+	 * @param array<string, Type> $constantTypes
+	 * @param \PHPStan\Reflection\FunctionReflection|MethodReflection|null $function
 	 * @param string|null $namespace
 	 * @param \PHPStan\Analyser\VariableTypeHolder[] $variablesTypes
 	 * @param \PHPStan\Analyser\VariableTypeHolder[] $moreSpecificTypes
@@ -43,8 +45,10 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 		\PhpParser\PrettyPrinter\Standard $printer,
 		\PHPStan\Analyser\TypeSpecifier $typeSpecifier,
 		\PHPStan\Rules\Properties\PropertyReflectionFinder $propertyReflectionFinder,
+		\PHPStan\Parser\Parser $parser,
 		\PHPStan\Analyser\ScopeContext $context,
 		bool $declareStrictTypes = false,
+		array $constantTypes = [],
 		$function = null,
 		?string $namespace = null,
 		array $variablesTypes = [],
@@ -67,8 +71,10 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 			$printer,
 			$typeSpecifier,
 			$propertyReflectionFinder,
+			$parser,
 			$context,
 			$declareStrictTypes,
+			$constantTypes,
 			$function,
 			$namespace,
 			$variablesTypes,
