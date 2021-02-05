@@ -10,9 +10,9 @@
         "phpstan/phpstan-phpunit": "^0.12",
         "phpunit/phpunit": "^7.0",
         "nette/di": "^3.0",
-        "squizlabs/php_codesniffer": "^3.5",
+        "squizlabs/php_codesniffer": "*",
         "consistence/coding-standard": "^3.10",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
+        "dealerdirect/phpcodesniffer-composer-installer": "*"
     },
     "license": "MIT",
     "authors": [

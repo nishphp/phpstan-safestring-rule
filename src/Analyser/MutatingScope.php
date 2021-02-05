@@ -9,6 +9,8 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PHPStan\Type\Type;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\FunctionReflection;
 
 class MutatingScope extends \PHPStan\Analyser\MutatingScope
 {
@@ -24,6 +26,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 	 * @param \PHPStan\Analyser\TypeSpecifier $typeSpecifier
 	 * @param \PHPStan\Rules\Properties\PropertyReflectionFinder $propertyReflectionFinder
 	 * @param \PHPStan\Parser\Parser $parser
+	 * @param \PHPStan\Analyser\NodeScopeResolver $nodeScopeResolver
 	 * @param \PHPStan\Analyser\ScopeContext $context
 	 * @param bool $declareStrictTypes
 	 * @param array<string, Type> $constantTypes
@@ -31,11 +34,17 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 	 * @param string|null $namespace
 	 * @param \PHPStan\Analyser\VariableTypeHolder[] $variablesTypes
 	 * @param \PHPStan\Analyser\VariableTypeHolder[] $moreSpecificTypes
+	 * @param array<string, \PHPStan\Analyser\ConditionalExpressionHolder[]> $conditionalExpressions
 	 * @param string|null $inClosureBindScopeClass
 	 * @param \PHPStan\Reflection\ParametersAcceptor|null $anonymousFunctionReflection
 	 * @param bool $inFirstLevelStatement
 	 * @param array<string, true> $currentlyAssignedExpressions
+	 * @param array<string, Type> $nativeExpressionTypes
+	 * @param array<MethodReflection|FunctionReflection> $inFunctionCallsStack
 	 * @param string[] $dynamicConstantNames
+	 * @param bool $treatPhpDocTypesAsCertain
+	 * @param bool $afterExtractCall
+	 * @param \PHPStan\Analyser\Scope|null $parentScope
 	 */
 	public function __construct(
 		\PHPStan\Analyser\ScopeFactory $scopeFactory,
@@ -46,6 +55,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 		\PHPStan\Analyser\TypeSpecifier $typeSpecifier,
 		\PHPStan\Rules\Properties\PropertyReflectionFinder $propertyReflectionFinder,
 		\PHPStan\Parser\Parser $parser,
+		\PHPStan\Analyser\NodeScopeResolver $nodeScopeResolver,
 		\PHPStan\Analyser\ScopeContext $context,
 		bool $declareStrictTypes = false,
 		array $constantTypes = [],
@@ -53,11 +63,17 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 		?string $namespace = null,
 		array $variablesTypes = [],
 		array $moreSpecificTypes = [],
+		array $conditionalExpressions = [],
 		?string $inClosureBindScopeClass = null,
 		?\PHPStan\Reflection\ParametersAcceptor $anonymousFunctionReflection = null,
 		bool $inFirstLevelStatement = true,
 		array $currentlyAssignedExpressions = [],
-		array $dynamicConstantNames = []
+		array $nativeExpressionTypes = [],
+		array $inFunctionCallsStack = [],
+		array $dynamicConstantNames = [],
+		bool $treatPhpDocTypesAsCertain = true,
+		bool $afterExtractCall = false,
+		?\PHPStan\Analyser\Scope $parentScope = null
 	)
 	{
 		$replacedDynamicReturnTypeExtensionRegistry
@@ -72,6 +88,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 			$typeSpecifier,
 			$propertyReflectionFinder,
 			$parser,
+			$nodeScopeResolver,
 			$context,
 			$declareStrictTypes,
 			$constantTypes,
@@ -79,11 +96,17 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 			$namespace,
 			$variablesTypes,
 			$moreSpecificTypes,
+			$conditionalExpressions,
 			$inClosureBindScopeClass,
 			$anonymousFunctionReflection,
 			$inFirstLevelStatement,
 			$currentlyAssignedExpressions,
-			$dynamicConstantNames
+			$nativeExpressionTypes,
+			$inFunctionCallsStack,
+			$dynamicConstantNames,
+			$treatPhpDocTypesAsCertain,
+			$afterExtractCall,
+			$parentScope
 		);
 	}
 
