@@ -43,6 +43,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 	 * @param array<MethodReflection|FunctionReflection> $inFunctionCallsStack
 	 * @param string[] $dynamicConstantNames
 	 * @param bool $treatPhpDocTypesAsCertain
+	 * @param bool $objectFromNewClass
 	 * @param bool $afterExtractCall
 	 * @param \PHPStan\Analyser\Scope|null $parentScope
 	 */
@@ -72,6 +73,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 		array $inFunctionCallsStack = [],
 		array $dynamicConstantNames = [],
 		bool $treatPhpDocTypesAsCertain = true,
+		bool $objectFromNewClass = false,
 		bool $afterExtractCall = false,
 		?\PHPStan\Analyser\Scope $parentScope = null
 	)
@@ -105,6 +107,7 @@ class MutatingScope extends \PHPStan\Analyser\MutatingScope
 			$inFunctionCallsStack,
 			$dynamicConstantNames,
 			$treatPhpDocTypesAsCertain,
+			$objectFromNewClass,
 			$afterExtractCall,
 			$parentScope
 		);

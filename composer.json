@@ -3,7 +3,7 @@
     "description": "Extension of PHPStan: Warn about unsafe strings",
     "require": {
         "php": "~7.1",
-        "phpstan/phpstan": "^0.12.29"
+        "phpstan/phpstan": "^0.12.79"
     },
     "require-dev": {
         "nikic/php-parser": "^4.5.0",
