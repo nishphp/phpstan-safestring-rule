@@ -14,6 +14,7 @@ use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
@@ -23,6 +24,16 @@ use PHPStan\Type\UnionType;
 class RuleHelper
 {
 
+	private static function acceptsString(Type $type): bool
+	{
+		if ($type instanceof SafeStringType ||
+			$type instanceof ConstantStringType) {
+			return true;
+		}
+
+		return $type->isLiteralString()->yes();
+	}
+
 	public static function accepts(Type $type): bool
 	{
 		if ($type instanceof ErrorType) {
@@ -30,12 +41,11 @@ class RuleHelper
 		}
 		if ($type instanceof IntegerType ||
 			$type instanceof BooleanType ||
-			$type instanceof NullType ||
-			$type instanceof ConstantStringType) {
+			$type instanceof NullType) {
 			return true;
 		}
 
-		if ($type instanceof SafeStringType) {
+		if (self::acceptsString($type)) {
 			return true;
 		}
 
@@ -46,8 +56,7 @@ class RuleHelper
 		if ($type instanceof UnionType) {
 			$innerTypes = $type->getTypes();
 			foreach ($innerTypes as $innerType) {
-				if ($innerType instanceof SafeStringType ||
-					$innerType instanceof ConstantStringType) {
+				if (self::acceptsString($innerType)) {
 					continue;
 				}
 
@@ -58,10 +67,25 @@ class RuleHelper
 			return true;
 		}
 
-		if ($type->toString() instanceof StringType) {
+		if ($type instanceof IntersectionType) {
+			$innerTypes = $type->getTypes();
+			foreach ($innerTypes as $innerType) {
+				if (self::acceptsString($innerType)) {
+					return true;
+				}
+
+				if ($innerType instanceof StringType) {
+					continue;
+				}
+			}
 			return false;
 		}
 
+		if ($type->toString() instanceof StringType) {
+			return self::acceptsString($type->toString());
+		}
+
+		// unknown type is accepts
 		return true;
 	}
 

@@ -8,9 +8,9 @@ use Nish\PHPStan\Rules\RuleHelper;
 use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PHPStan\Type\Type;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Type;
 
 class MutatingScope extends \PHPStan\Analyser\MutatingScope
 {

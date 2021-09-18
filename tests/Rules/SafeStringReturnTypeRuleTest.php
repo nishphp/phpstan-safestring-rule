@@ -41,11 +41,11 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
 				19,
 			],
 			[
-				'Function getQuery5() should return safe-string but returns string.',
+				'Function getQuery5() should return safe-string but returns non-empty-string.',
 				23,
 			],
 			[
-				'Method ReturnTypes::getRaw() should return safe-string but returns string.',
+				'Method ReturnTypes::getRaw() should return safe-string but returns non-empty-string.',
 				35,
 			],
 		]);

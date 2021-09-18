@@ -37,15 +37,15 @@ class SafeStringReturnTypeRule implements Rule
 	/** @return array<string|\PHPStan\Rules\RuleError> errors */
 	public function processNode(Node $node, Scope $scope): array
 	{
-		if ($scope->getFunction() === null) {
+		$function = $scope->getFunction();
+
+		if ($function === null) {
 			return [];
 		}
 
 		if ($scope->isInAnonymousFunction()) {
 			return [];
 		}
-
-		$function = $scope->getFunction();
 
 		if ($function instanceof MethodReflection) {
 			$name = sprintf(
