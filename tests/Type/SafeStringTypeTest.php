@@ -7,6 +7,7 @@ use PHPStan\TrinaryLogic;
 use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use Nish\PHPStan\Test\ClassWithToString;
+use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\IntersectionType;
@@ -59,6 +60,14 @@ class StringTypeTest extends TestCase
 				new SafeStringType(),
 				TrinaryLogic::createYes(),
 			],
+            [
+                new SafeStringType(),
+                new IntersectionType([
+                    new StringType(),
+                    new AccessoryLiteralStringType(),
+                ]),
+                TrinaryLogic::createYes(),
+            ],
 		];
 	}
 
@@ -79,12 +88,12 @@ class StringTypeTest extends TestCase
 	{
         return [
             [
-			new SafeStringType(),
-			new IntersectionType([
-				new ObjectType(ClassWithToString::class),
-				new HasPropertyType('foo'),
-			]),
-			TrinaryLogic::createNo(),
+                new SafeStringType(),
+                new IntersectionType([
+                    new ObjectType(ClassWithToString::class),
+                    new HasPropertyType('foo'),
+                ]),
+                TrinaryLogic::createNo(),
             ],
             [
                 new SafeStringType(),
@@ -104,6 +113,14 @@ class StringTypeTest extends TestCase
             [
                 new SafeStringType(),
                 new SafeStringType(),
+                TrinaryLogic::createYes(),
+            ],
+            [
+                new SafeStringType(),
+                new IntersectionType([
+                    new StringType(),
+                    new AccessoryLiteralStringType(),
+                ]),
                 TrinaryLogic::createYes(),
             ],
         ];

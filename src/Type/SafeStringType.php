@@ -32,6 +32,10 @@ class SafeStringType extends StringType
 			return TrinaryLogic::createYes();
 		}
 
+		if ($type->isLiteralString()->yes()) {
+			return TrinaryLogic::createYes();
+		}
+
 		if ($type instanceof CompoundType) {
 			return $type->isAcceptedBy($this, $strictTypes);
 		}
@@ -46,6 +50,10 @@ class SafeStringType extends StringType
 		}
 
 		if ($type instanceof ConstantStringType) {
+			return TrinaryLogic::createYes();
+		}
+
+		if ($type->isLiteralString()->yes()) {
 			return TrinaryLogic::createYes();
 		}
 
