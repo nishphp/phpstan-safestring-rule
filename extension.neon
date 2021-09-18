@@ -5,6 +5,12 @@ services:
   # -
   #   class: Nish\PHPStan\Rules\EchoHtmlRule
   #   tags: [phpstan.rules.rule]
+
+  -
+    class: Nish\PHPStan\DependencyInjection\Type\LazyDynamicReturnTypeExtensionRegistryProvider
+    factory: Nish\PHPStan\DependencyInjection\Type\LazyDynamicReturnTypeExtensionRegistryProvider
+    autowired:
+      - PHPStan\DependencyInjection\Type\DynamicReturnTypeExtensionRegistryProvider
   -
     class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
     tags: [phpstan.phpDoc.typeNodeResolverExtension]
