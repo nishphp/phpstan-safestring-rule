@@ -20,11 +20,14 @@ class SprintfFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\Sprint
 		Scope $scope
 	): Type
 	{
-		if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
-			return new SafeStringType();
+		$originalResult = parent::getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		if (!RuleHelper::accepts($originalResult)) {
+			if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
+				return new SafeStringType();
+			}
 		}
 
-		return parent::getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		return $originalResult;
 	}
 
 }

@@ -7,6 +7,7 @@ namespace Nish\PHPStan\Rules;
 use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\Type\Accessory\AccessoryType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -56,7 +57,11 @@ class RuleHelper
 		if ($type instanceof UnionType) {
 			$innerTypes = $type->getTypes();
 			foreach ($innerTypes as $innerType) {
-				if (self::acceptsString($innerType)) {
+				if ($innerType instanceof AccessoryType) {
+					continue;
+				}
+
+				if (self::accepts($innerType)) {
 					continue;
 				}
 
@@ -70,7 +75,11 @@ class RuleHelper
 		if ($type instanceof IntersectionType) {
 			$innerTypes = $type->getTypes();
 			foreach ($innerTypes as $innerType) {
-				if (self::acceptsString($innerType)) {
+				if ($innerType instanceof AccessoryType) {
+					continue;
+				}
+
+				if (self::accepts($innerType)) {
 					return true;
 				}
 
@@ -81,8 +90,13 @@ class RuleHelper
 			return false;
 		}
 
-		if ($type->toString() instanceof StringType) {
-			return self::acceptsString($type->toString());
+		if ($type instanceof ArrayType) {
+			return self::isSafeArray($type);
+		}
+
+		$stringType = $type->toString();
+		if ($stringType instanceof StringType) {
+			return self::acceptsString($stringType);
 		}
 
 		// unknown type is accepts
