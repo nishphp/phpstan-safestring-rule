@@ -8,6 +8,7 @@ use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use Nish\PHPStan\Test\ClassWithToString;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
+use PHPStan\Type\Accessory\AccessoryNumericStringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\IntersectionType;
@@ -65,6 +66,14 @@ class StringTypeTest extends TestCase
                 new IntersectionType([
                     new StringType(),
                     new AccessoryLiteralStringType(),
+                ]),
+                TrinaryLogic::createYes(),
+            ],
+            [
+                new SafeStringType(),
+                new IntersectionType([
+                    new StringType(),
+                    new AccessoryNumericStringType(),
                 ]),
                 TrinaryLogic::createYes(),
             ],

@@ -32,7 +32,14 @@ class RuleHelper
 			return true;
 		}
 
-		return $type->isLiteralString()->yes();
+		if ($type->isLiteralString()->yes()) {
+			return true;
+		}
+		if ($type->isNumericString()->yes()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static function accepts(Type $type): bool

@@ -7,6 +7,7 @@ namespace Nish\PHPStan\Rules;
 use PHPStan\Testing\TestCase;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
+use PHPStan\Type\Accessory\AccessoryNumericStringType;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -39,6 +40,10 @@ class RuleHelperTest extends TestCase
 
 		$this->assertTrue(RuleHelper::accepts(new UnionType([
 			new IntegerType(), new BooleanType(),
+		])));
+
+		$this->assertTrue(RuleHelper::accepts(new IntersectionType([
+			new StringType(), new AccessoryNumericStringType(),
 		])));
 	}
 
