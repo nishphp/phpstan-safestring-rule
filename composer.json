@@ -1,6 +1,13 @@
 {
     "name": "nish/phpstan-safestring-rule",
     "description": "Extension of PHPStan: Warn about unsafe strings",
+    "type": "phpstan-extension",
+    "keywords": [
+        "static analysis",
+        "code analysis",
+        "code analyse",
+        "phpstan"
+    ],
     "require": {
         "php": "~7.1",
         "phpstan/phpstan": "^0.12.79"
