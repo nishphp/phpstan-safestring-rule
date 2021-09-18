@@ -9,9 +9,6 @@ services:
     class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
     tags: [phpstan.phpDoc.typeNodeResolverExtension]
   -
-    class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
-    tags: [phpstan.phpDoc.typeNodeResolverExtension]
-  -
     class: Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
     tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
   -
