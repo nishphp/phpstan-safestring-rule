@@ -25,7 +25,7 @@ use PHPStan\Type\UnionType;
 class RuleHelper
 {
 
-	private static function acceptsString(Type $type): bool
+	public static function acceptsString(Type $type): bool
 	{
 		if ($type instanceof SafeStringType ||
 			$type instanceof ConstantStringType) {
