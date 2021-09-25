@@ -28,7 +28,7 @@ class SafeHtmlStringTypeTest extends TestCase
 			[
 				new SafeHtmlStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
-				TrinaryLogic::createYes(),
+				TrinaryLogic::createNo(),
 			],
 			[
 				new SafeHtmlStringType(),
@@ -88,7 +88,7 @@ class SafeHtmlStringTypeTest extends TestCase
             [
                 new SafeHtmlStringType(),
                 new ClassStringType(),
-                TrinaryLogic::createYes(),
+                TrinaryLogic::createNo(),
             ],
             [
                 new SafeHtmlStringType(),
