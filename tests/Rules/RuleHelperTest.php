@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Rules;
 
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\Accessory\AccessoryNumericStringType;

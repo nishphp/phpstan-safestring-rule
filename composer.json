@@ -10,11 +10,11 @@
     ],
     "require": {
         "php": "~7.1",
-        "phpstan/phpstan": "^0.12.79"
+        "phpstan/phpstan": "^1.4.6"
     },
     "require-dev": {
-        "nikic/php-parser": "^4.5.0",
-        "phpstan/phpstan-phpunit": "^0.12",
+        "nikic/php-parser": "*",
+        "phpstan/phpstan-phpunit": "*",
         "phpunit/phpunit": "^7.0",
         "nette/di": "^3.0",
         "squizlabs/php_codesniffer": "*",

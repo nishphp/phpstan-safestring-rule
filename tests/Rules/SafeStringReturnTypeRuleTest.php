@@ -25,7 +25,7 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
                 'ReturnTypes::getSafe',
                 'ReturnTypes::getRaw',
             ],
-            new FunctionReturnTypeCheck(new RuleLevelHelper($this->createBroker(), true, false, true))
+            new FunctionReturnTypeCheck(new RuleLevelHelper($this->createBroker(), true, false, true, true))
 		);
 	}
 

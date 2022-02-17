@@ -21,7 +21,7 @@ class SafeStringCallRuleTest extends RuleTestCase
                 'Nish\PHPStan\Test\SqlString::append' => 0,
                 'Nish\PHPStan\Test\SqlString::create' => 1,
             ],
-			new RuleLevelHelper($this->createBroker(), true, false, true)
+			new RuleLevelHelper($this->createBroker(), true, false, true, true)
 		);
 	}
 

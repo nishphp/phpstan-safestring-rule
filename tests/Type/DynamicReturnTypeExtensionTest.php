@@ -2,7 +2,7 @@
 
 namespace Nish\PHPStan\Type;
 
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;

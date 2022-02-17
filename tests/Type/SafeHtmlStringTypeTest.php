@@ -2,7 +2,7 @@
 
 namespace Nish\PHPStan\Type;
 
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\Generic\GenericClassStringType;

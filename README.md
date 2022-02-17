@@ -2,6 +2,15 @@
 
 This package is a PHPStan extension for checking unsafe string, e.g. Check calling echo without calling htmlspecialchars,  check calling database query without using prepared statement.
 
+
+## Notice
+
+This package does not meet the "backward compatibility promise".
+Because it extends the basic processing of the core, it is not guaranteed to work with version differences.
+
+https://phpstan.org/developing-extensions/backward-compatibility-promise
+
+
 ## Install
 
 ```
