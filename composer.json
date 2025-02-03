@@ -10,15 +10,14 @@
     ],
     "require": {
         "php": "~7.1 || ~8.0",
-        "phpstan/phpstan": "^1.4.6"
+        "phpstan/phpstan": "^2.1.2"
     },
     "require-dev": {
         "nikic/php-parser": "*",
         "phpstan/phpstan-phpunit": "*",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^8.0",
         "nette/di": "^3.0",
         "squizlabs/php_codesniffer": "*",
-        "consistence/coding-standard": "^3.10",
         "dealerdirect/phpcodesniffer-composer-installer": "*"
     },
     "license": "MIT",
@@ -42,5 +41,10 @@
             "tests/Rules/data/safestringcall.php",
             "tests/Rules/data/safestringreturntype.php"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

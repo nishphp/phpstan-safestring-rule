@@ -10,9 +10,20 @@ use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\Type;
+use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 
-class ImplodeFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\ImplodeFunctionReturnTypeExtension
+class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
+    public function __construct(
+        private \PHPStan\Type\Php\ImplodeFunctionReturnTypeExtension $parentClass,
+    )
+    {
+    }
+
+	public function isFunctionSupported(FunctionReflection $functionReflection): bool
+    {
+        return $this->parentClass->isFunctionSupported($functionReflection);
+    }
 
 	public function getTypeFromFunctionCall(
 		FunctionReflection $functionReflection,
@@ -20,7 +31,7 @@ class ImplodeFunctionDynamicReturnTypeExtension extends \PHPStan\Type\Php\Implod
 		Scope $scope
 	): Type
 	{
-		$originalResult = parent::getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 		if (RuleHelper::accepts($originalResult)) {
 			return $originalResult;
 		}
