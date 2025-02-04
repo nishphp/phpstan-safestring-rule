@@ -9,8 +9,8 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Type\Type;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\Type;
 
 class SprintfFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
@@ -33,8 +33,9 @@ class SprintfFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 	): ?Type
 	{
 		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
-		if (!$originalResult)
+		if (!$originalResult) {
 			return null;
+		}
 
 		if (!RuleHelper::accepts($originalResult)) {
 			if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {

@@ -4,29 +4,26 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type;
 
+use PHPStan\Reflection\ClassMemberAccessAnswerer;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\AcceptsResult;
-use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\CompoundType;
-use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\ErrorType;
+use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
-use PHPStan\Reflection\ClassMemberAccessAnswerer;
-use PHPStan\ShouldNotHappenException;
 
 class SafeStringType extends StringType
 {
 
-	// @see \PHPStan\Type\Traits\NonCallableTypeTrait;
+	/** @see \PHPStan\Type\Traits\NonCallableTypeTrait */
 	public function isCallable(): TrinaryLogic
 	{
 		return TrinaryLogic::createNo();
 	}
-	public function getCallableParametersAcceptors(ClassMemberAccessAnswerer $scope): array
+	public function getCallableParametersAcceptors(ClassMemberAccessAnswerer $scope): never
 	{
-		throw new ShouldNotHappenException();
+		throw new \PHPStan\ShouldNotHappenException();
 	}
 
 
@@ -42,7 +39,7 @@ class SafeStringType extends StringType
 		}
 
 		if ($type->isString()->yes() && count($type->getConstantStrings()) !== 0) {
-			return  AcceptsResult::createYes();
+			return AcceptsResult::createYes();
 		}
 
 		if ($type->isLiteralString()->yes()) {
@@ -84,4 +81,5 @@ class SafeStringType extends StringType
 
 		return IsSuperTypeOfResult::createNo();
 	}
+
 }

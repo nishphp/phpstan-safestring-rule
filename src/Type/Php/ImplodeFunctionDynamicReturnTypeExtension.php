@@ -9,11 +9,12 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Type\Type;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\Type;
 
 class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
+
 	public function __construct(
 		private \PHPStan\Type\Php\ImplodeFunctionReturnTypeExtension $parentClass,
 	)

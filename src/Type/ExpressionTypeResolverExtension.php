@@ -5,27 +5,27 @@ declare(strict_types = 1);
 namespace Nish\PHPStan\Type;
 
 use Nish\PHPStan\Rules\RuleHelper;
-use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension;
+use Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension;
+use Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension;
+use Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
-use PHPStan\Type\Type;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ArgumentsNormalizer;
-use PHPStan\Reflection\InitializerExprTypeResolver;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\InitializerExprContext;
-use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Reflection\InitializerExprTypeResolver;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
-use Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension;
-use Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension;
-use Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension;
-use Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension;
+use PHPStan\Type\Type;
 
 class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeResolverExtension
 {
+
 	/** @var array<int,DynamicFunctionReturnTypeExtension> */
-	private $dynamicReturnTypeExtensions = [];
+	private array $dynamicReturnTypeExtensions = [];
 
 	public function __construct(
 		private ReflectionProvider $reflectionProvider,
@@ -47,22 +47,26 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	public function getType(Expr $node, Scope $scope): ?Type
 	{
 		$type = self::getTypeConcat($node, $scope);
-		if ($type)
+		if ($type) {
 				return $type;
-	
+		}
+
 		$type = self::getTypeFunction($node, $scope);
-		if ($type)
+		if ($type) {
 			return $type;
-	
+		}
+
 		return null;
 	}
 
 	private function getTypeFunction(Expr $node, Scope $scope): ?Type
 	{
-		if (!($node instanceof FuncCall))
+		if (!($node instanceof FuncCall)) {
 			return null;
-		if ($node->name instanceof Expr)
+		}
+		if ($node->name instanceof Expr) {
 			return null;
+		}
 
 		if (!$this->reflectionProvider->hasFunction($node->name, $scope)) {
 			return null;
@@ -77,8 +81,9 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			$functionReflection->getNamedArgumentsVariants(),
 		);
 		$normalizedNode = ArgumentsNormalizer::reorderFuncArguments($parametersAcceptor, $node);
-		if ($normalizedNode === null)
+		if ($normalizedNode === null) {
 			return null;
+		}
 
 		foreach ($this->dynamicReturnTypeExtensions as $dynamicFunctionReturnTypeExtension) {
 			if (!$dynamicFunctionReturnTypeExtension->isFunctionSupported($functionReflection)) {
@@ -95,7 +100,6 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			}
 		}
 
-
 		return null;
 	}
 
@@ -106,8 +110,9 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			$parentResult = $this->initializerExprTypeResolver->getType($node, InitializerExprContext::fromScope($scope));
 		}
 
-		if ($parentResult === null)
+		if ($parentResult === null) {
 			return null;
+		}
 
 		if (!RuleHelper::accepts($parentResult)) {
 			$type = $this->resolveTypeExtension($node, $scope);

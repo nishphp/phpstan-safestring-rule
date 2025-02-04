@@ -10,8 +10,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Rules\RuleLevelHelper;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 
@@ -21,11 +19,10 @@ use PHPStan\Type\VerbosityLevel;
 class SafeStringCallRule implements Rule
 {
 
-	/** @var \PHPStan\Rules\RuleLevelHelper */
-	private $ruleLevelHelper;
+	private \PHPStan\Rules\RuleLevelHelper $ruleLevelHelper;
 
 	/** @var array<string, int> func => index of argument */
-	private $patterns;
+	private array $patterns;
 
 	/**
 	 * @param array<string, int> $patterns
@@ -66,7 +63,7 @@ class SafeStringCallRule implements Rule
 				}
 			)->getType();
 
-            $classNames = $type->getObjectClassNames();
+			$classNames = $type->getObjectClassNames();
 			if (!$classNames || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
 				return [];
 			}
@@ -104,7 +101,7 @@ class SafeStringCallRule implements Rule
 		}
 		$index = $this->patterns[$func];
 
-        $args = $node->getArgs();
+		$args = $node->getArgs();
 		if (!isset($args[$index])) {
 			return [];
 		}

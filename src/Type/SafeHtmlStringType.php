@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type;
 
-use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 
 class SafeHtmlStringType extends SafeStringType
@@ -14,4 +13,5 @@ class SafeHtmlStringType extends SafeStringType
 	{
 		return 'safehtml-string';
 	}
+
 }

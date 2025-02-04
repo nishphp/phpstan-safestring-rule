@@ -15,41 +15,39 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	DynamicMethodReturnTypeExtension, DynamicStaticMethodReturnTypeExtension
 {
 
-	/** @var Type */
-	private $type;
+	private Type $type;
 
 	/** @var string|array<string> */
-	private $func;
+	private string|array $func;
 
 	/** @var ?class-string */
-	private $class;
+	private ?string $class = null;
 
 	/**
-     * @param string|array<string> $func
-     * @param class-string<Type> $type
-     */
-	public function __construct($func, string $type = SafeStringType::class)
+	 * @param string|array<string> $func
+	 * @param class-string<Type> $type
+	 */
+	public function __construct(string|array $func, string $type = SafeStringType::class)
 	{
 		$this->type = new $type();
 		$this->parseArgs($func);
 	}
 
 	/** @param string|array<string> $func */
-	private function parseArgs($func): void
+	private function parseArgs(string|array $func): void
 	{
 		if (is_array($func)) {
 			$funcs = [];
 			foreach ($func as $f) {
 				$funcs[$f] = $f;
 			}
-            $this->func = $funcs;
+			$this->func = $funcs;
 			return;
 		}
 
@@ -62,16 +60,13 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 		}
 	}
 
-    /** @return class-string */
+	/** @return class-string */
 	public function getClass(): string
 	{
 		return $this->class ?: 'stdClass';
 	}
 
-	/**
-     * @param FunctionReflection|MethodReflection $functionReflection
-	 */
-	private function getTypeFromCall($functionReflection, CallLike $functionCall, Scope $scope): Type
+	private function getTypeFromCall(FunctionReflection|MethodReflection $functionReflection, CallLike $functionCall, Scope $scope): Type
 	{
 		$returnType = ParametersAcceptorSelector::selectFromArgs(
 			$scope,

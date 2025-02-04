@@ -8,17 +8,9 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Accessory\AccessoryType;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ErrorType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\NullType;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 
@@ -27,8 +19,9 @@ class RuleHelper
 
 	public static function acceptsString(Type $type): bool
 	{
-		if (!$type->isString()->yes())
+		if (!$type->isString()->yes()) {
 			return false;
+		}
 
 		if ($type instanceof SafeStringType ||
 			count($type->getConstantStrings()) > 0) {
@@ -47,8 +40,9 @@ class RuleHelper
 
 	public static function accepts(?Type $type): bool
 	{
-        if ($type === null)
-            return false;
+		if ($type === null) {
+			return false;
+		}
 
 		if ($type instanceof ErrorType) {
 			return true;

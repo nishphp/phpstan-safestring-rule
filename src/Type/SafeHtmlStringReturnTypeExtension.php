@@ -8,7 +8,7 @@ class SafeHtmlStringReturnTypeExtension extends DynamicReturnTypeExtension
 {
 
 	/** @param string|array<string> $func */
-	public function __construct($func)
+	public function __construct(string|array $func)
 	{
 		parent::__construct($func, SafeHtmlStringType::class);
 	}

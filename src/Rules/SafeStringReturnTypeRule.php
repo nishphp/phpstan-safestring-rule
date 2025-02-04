@@ -19,7 +19,7 @@ class SafeStringReturnTypeRule implements Rule
 {
 
 	/** @var array<string,string> funcs,methods */
-	private $patterns = [];
+	private array $patterns = [];
 
 	/** @param array<int,string> $patterns */
 	public function __construct(array $patterns)
