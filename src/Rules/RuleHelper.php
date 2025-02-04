@@ -45,8 +45,11 @@ class RuleHelper
 		return false;
 	}
 
-	public static function accepts(Type $type): bool
+	public static function accepts(?Type $type): bool
 	{
+        if ($type === null)
+            return false;
+
 		if ($type instanceof ErrorType) {
 			return true;
 		}

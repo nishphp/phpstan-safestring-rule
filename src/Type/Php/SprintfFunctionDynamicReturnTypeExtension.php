@@ -15,24 +15,27 @@ use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 class SprintfFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-    public function __construct(
-        private \PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension $parentClass,
-    )
-    {
-    }
+	public function __construct(
+		private \PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension $parentClass,
+	)
+	{
+	}
 
 	public function isFunctionSupported(FunctionReflection $functionReflection): bool
-    {
-        return $this->parentClass->isFunctionSupported($functionReflection);
-    }
+	{
+		return $this->parentClass->isFunctionSupported($functionReflection);
+	}
 
 	public function getTypeFromFunctionCall(
 		FunctionReflection $functionReflection,
 		FuncCall $functionCall,
 		Scope $scope
-	): Type
+	): ?Type
 	{
 		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		if (!$originalResult)
+			return null;
+
 		if (!RuleHelper::accepts($originalResult)) {
 			if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
 				return new SafeStringType();
