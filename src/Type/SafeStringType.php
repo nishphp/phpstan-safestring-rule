@@ -41,7 +41,7 @@ class SafeStringType extends StringType
 			return AcceptsResult::createYes();
 		}
 
-		if (count($type->getConstantStrings()) !== 0) {
+		if ($type->isString()->yes() && count($type->getConstantStrings()) !== 0) {
 			return  AcceptsResult::createYes();
 		}
 

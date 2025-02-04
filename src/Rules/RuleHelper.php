@@ -27,6 +27,9 @@ class RuleHelper
 
 	public static function acceptsString(Type $type): bool
 	{
+		if (!$type->isString()->yes())
+			return false;
+
 		if ($type instanceof SafeStringType ||
 			count($type->getConstantStrings()) > 0) {
 			return true;
