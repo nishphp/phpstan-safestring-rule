@@ -16,6 +16,7 @@ use PHPStan\Reflection\InitializerExprTypeResolver;
 use PHPStan\Reflection\InitializerExprContext;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension;
 use Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension;
 use Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension;
@@ -23,23 +24,24 @@ use Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension;
 
 class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeResolverExtension
 {
+	/** @var array<int,DynamicFunctionReturnTypeExtension> */
 	private $dynamicReturnTypeExtensions = [];
 
 	public function __construct(
 		private ReflectionProvider $reflectionProvider,
 		private InitializerExprTypeResolver $initializerExprTypeResolver,
-		private SprintfFunctionDynamicReturnTypeExtension $sprintfExtension,
-        private ReplaceFunctionsDynamicReturnTypeExtension $replaceExtension,
-        private ImplodeFunctionDynamicReturnTypeExtension $implodeExtension,
-        private TrimFunctionDynamicReturnTypeExtension $trimExtension,
+		SprintfFunctionDynamicReturnTypeExtension $sprintfExtension,
+		ReplaceFunctionsDynamicReturnTypeExtension $replaceExtension,
+		ImplodeFunctionDynamicReturnTypeExtension $implodeExtension,
+		TrimFunctionDynamicReturnTypeExtension $trimExtension,
 	)
 	{
 		$this->dynamicReturnTypeExtensions = [
-            $sprintfExtension,
-            $replaceExtension,
-            $implodeExtension,
-            $trimExtension,
-        ];
+			$sprintfExtension,
+			$replaceExtension,
+			$implodeExtension,
+			$trimExtension,
+		];
 	}
 
 	public function getType(Expr $node, Scope $scope): ?Type
