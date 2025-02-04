@@ -52,7 +52,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 		}
 
 		$parts = explode('::', $func);
-		if (isset($parts[1]) && class_exists($parts[0])) {
+		if (isset($parts[1]) && (class_exists($parts[0]) || interface_exists($parts[0]))) {
 			$this->class = $parts[0];
 			$this->func = $parts[1];
 		} else {
