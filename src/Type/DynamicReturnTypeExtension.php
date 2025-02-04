@@ -28,10 +28,13 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	/** @var string|array<string> */
 	private $func;
 
-	/** @var ?string */
+	/** @var ?class-string */
 	private $class;
 
-	/** @param string|array<string> $func */
+	/**
+     * @param string|array<string> $func
+     * @param class-string<Type> $type
+     */
 	public function __construct($func, string $type = SafeStringType::class)
 	{
 		$this->type = new $type();
@@ -42,15 +45,16 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	private function parseArgs($func): void
 	{
 		if (is_array($func)) {
-			$this->func = [];
+			$funcs = [];
 			foreach ($func as $f) {
-				$this->func[$f] = $f;
+				$funcs[$f] = $f;
 			}
+            $this->func = $funcs;
 			return;
 		}
 
 		$parts = explode('::', $func);
-		if (isset($parts[1])) {
+		if (isset($parts[1]) && class_exists($parts[0])) {
 			$this->class = $parts[0];
 			$this->func = $parts[1];
 		} else {
@@ -58,6 +62,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 		}
 	}
 
+    /** @return class-string */
 	public function getClass(): string
 	{
 		return $this->class ?: 'stdClass';
@@ -65,7 +70,6 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	/**
      * @param FunctionReflection|MethodReflection $functionReflection
-	 * @param \PHPStan\Reflection\ParametersAcceptor[] $params
 	 */
 	private function getTypeFromCall($functionReflection, CallLike $functionCall, Scope $scope): Type
 	{
