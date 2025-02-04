@@ -1,28 +1,19 @@
-parameters:
-  scopeClass: Nish\PHPStan\Analyser\MutatingScope
-
 services:
   # -
   #   class: Nish\PHPStan\Rules\EchoHtmlRule
   #   tags: [phpstan.rules.rule]
 
   -
-    class: Nish\PHPStan\DependencyInjection\Type\LazyDynamicReturnTypeExtensionRegistryProvider
-    factory: Nish\PHPStan\DependencyInjection\Type\LazyDynamicReturnTypeExtensionRegistryProvider
-    autowired:
-      - PHPStan\DependencyInjection\Type\DynamicReturnTypeExtensionRegistryProvider
+    class: Nish\PHPStan\Type\ExpressionTypeResolverExtension
+    tags: [phpstan.broker.expressionTypeResolverExtension]
   -
     class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
     tags: [phpstan.phpDoc.typeNodeResolverExtension]
   -
     class: Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
   -
     class: Nish\PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
   -
     class: Nish\PHPStan\Type\Php\ImplodeFunctionDynamicReturnTypeExtension
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
   -
     class: Nish\PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]

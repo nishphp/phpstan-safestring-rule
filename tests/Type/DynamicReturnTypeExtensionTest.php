@@ -1,5 +1,9 @@
 <?php declare(strict_types = 1);
 
+namespace App;
+
+class Html{}
+
 namespace Nish\PHPStan\Type;
 
 use PHPUnit\Framework\TestCase;

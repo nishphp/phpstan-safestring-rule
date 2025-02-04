@@ -8,17 +8,9 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Accessory\AccessoryType;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ErrorType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\NullType;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 
@@ -27,8 +19,12 @@ class RuleHelper
 
 	public static function acceptsString(Type $type): bool
 	{
+		if (!$type->isString()->yes()) {
+			return false;
+		}
+
 		if ($type instanceof SafeStringType ||
-			$type instanceof ConstantStringType) {
+			count($type->getConstantStrings()) > 0) {
 			return true;
 		}
 
@@ -42,14 +38,18 @@ class RuleHelper
 		return false;
 	}
 
-	public static function accepts(Type $type): bool
+	public static function accepts(?Type $type): bool
 	{
+		if ($type === null) {
+			return false;
+		}
+
 		if ($type instanceof ErrorType) {
 			return true;
 		}
-		if ($type instanceof IntegerType ||
-			$type instanceof BooleanType ||
-			$type instanceof NullType) {
+		if ($type->isInteger()->yes() ||
+			$type->isBoolean()->yes() ||
+			$type->isNull()->yes()) {
 			return true;
 		}
 
@@ -57,7 +57,7 @@ class RuleHelper
 			return true;
 		}
 
-		if ($type instanceof ObjectType) {
+		if ($type->isObject()->yes()) {
 			return true;
 		}
 
@@ -72,7 +72,7 @@ class RuleHelper
 					continue;
 				}
 
-				if ($innerType instanceof StringType) {
+				if ($innerType->isString()->yes()) {
 					return false;
 				}
 			}
@@ -90,19 +90,19 @@ class RuleHelper
 					return true;
 				}
 
-				if ($innerType instanceof StringType) {
+				if ($innerType->isString()->yes()) {
 					continue;
 				}
 			}
 			return false;
 		}
 
-		if ($type instanceof ArrayType) {
+		if ($type->isArray()->yes()) {
 			return self::isSafeArray($type);
 		}
 
 		$stringType = $type->toString();
-		if ($stringType instanceof StringType) {
+		if ($stringType->isString()->yes()) {
 			return self::acceptsString($stringType);
 		}
 
@@ -110,7 +110,7 @@ class RuleHelper
 		return true;
 	}
 
-	public static function isSafeArray(ArrayType $type): bool
+	public static function isSafeArray(Type $type): bool
 	{
 		if ($type instanceof ConstantArrayType) {
 			foreach ($type->getValueTypes() as $innerType) {
@@ -121,7 +121,7 @@ class RuleHelper
 			return true;
 		}
 
-		return self::accepts($type->getItemType());
+		return self::accepts($type->getIterableValueType());
 	}
 
 	public static function isSafeUnionArray(UnionType $type): bool
@@ -131,7 +131,7 @@ class RuleHelper
 				if (!self::isSafeUnionArray($innerType)) {
 					return false;
 				}
-			} elseif ($innerType instanceof ArrayType) {
+			} elseif ($innerType->isArray()->yes()) {
 				if (!self::isSafeArray($innerType)) {
 					return false;
 				}
@@ -146,9 +146,9 @@ class RuleHelper
 	{
 		$isSafe = true;
 		$isConstantOnly = true;
-		foreach ($functionCall->args as $arg) {
+		foreach ($functionCall->getArgs() as $arg) {
 			$argType = $scope->getType($arg->value);
-			if (!$argType instanceof ConstantScalarType) {
+			if (count($argType->getConstantScalarTypes()) === 0) {
 				$isConstantOnly = false;
 			}
 

@@ -31,7 +31,7 @@ class EchoHtmlRuleTest extends RuleTestCase
 	protected function getRule(): Rule
 	{
 		return new EchoHtmlRule(
-			new RuleLevelHelper($this->createBroker(), true, false, true, true)
+			new RuleLevelHelper($this->createReflectionProvider(), true, false, true, true, true, true)
 		);
 	}
 

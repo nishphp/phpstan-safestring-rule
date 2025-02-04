@@ -10,8 +10,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Rules\RuleLevelHelper;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 
@@ -21,11 +19,10 @@ use PHPStan\Type\VerbosityLevel;
 class SafeStringCallRule implements Rule
 {
 
-	/** @var \PHPStan\Rules\RuleLevelHelper */
-	private $ruleLevelHelper;
+	private \PHPStan\Rules\RuleLevelHelper $ruleLevelHelper;
 
 	/** @var array<string, int> func => index of argument */
-	private $patterns;
+	private array $patterns;
 
 	/**
 	 * @param array<string, int> $patterns
@@ -66,11 +63,12 @@ class SafeStringCallRule implements Rule
 				}
 			)->getType();
 
-			if (!$type instanceof ObjectType || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
+			$classNames = $type->getObjectClassNames();
+			if (!$classNames || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
 				return [];
 			}
 
-			$func = $type->getClassName() . '::'
+			$func = $classNames[0] . '::'
 				  . $node->name->toString();
 
 		} elseif ($node instanceof Expr\StaticCall) {
@@ -103,17 +101,18 @@ class SafeStringCallRule implements Rule
 		}
 		$index = $this->patterns[$func];
 
-		if (!isset($node->args[$index])) {
+		$args = $node->getArgs();
+		if (!isset($args[$index])) {
 			return [];
 		}
-		$arg = $node->args[$index];
+		$arg = $args[$index];
 
 		$type = $this->ruleLevelHelper->findTypeToCheck(
 			$scope,
 			$arg->value,
 			'',
 			static function (Type $type): bool {
-				return $type instanceof StringType;
+				return $type->isString()->yes();
 			}
 		)->getType();
 

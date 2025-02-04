@@ -2,7 +2,8 @@
 
 namespace Nish\PHPStan\Type;
 
-use PHPUnit\Framework\TestCase;
+use PHPStan\Testing\PHPStanTestCase;
+use PHPStan\Reflection\ReflectionProviderStaticAccessor;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\Generic\GenericClassStringType;
@@ -19,8 +20,12 @@ use PHPStan\Type\ClassStringType;
 use PHPStan\Type\ObjectType;
 
 
-class SafeHtmlStringTypeTest extends TestCase
+class SafeHtmlStringTypeTest extends PHPStanTestCase
 {
+	public function setUp(): void
+	{
+        ReflectionProviderStaticAccessor::registerInstance($this->createReflectionProvider());
+    }
 
 	public function dataIsSuperTypeOf(): array
 	{
@@ -106,7 +111,7 @@ class SafeHtmlStringTypeTest extends TestCase
 	 */
 	public function testAccepts(SafeHtmlStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
-		$actualResult = $type->accepts($otherType, true);
+		$actualResult = $type->accepts($otherType, true)->result;
 		$this->assertSame(
 			$expectedResult->describe(),
 			$actualResult->describe(),

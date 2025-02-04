@@ -9,10 +9,22 @@ use Nish\PHPStan\Type\SafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
 
-class ReplaceFunctionsDynamicReturnTypeExtension extends \PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension
+class ReplaceFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
+
+	public function __construct(
+		private \PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension $parentClass,
+	)
+	{
+	}
+
+	public function isFunctionSupported(FunctionReflection $functionReflection): bool
+	{
+		return $this->parentClass->isFunctionSupported($functionReflection);
+	}
 
 	public function getTypeFromFunctionCall(
 		FunctionReflection $functionReflection,
@@ -24,7 +36,7 @@ class ReplaceFunctionsDynamicReturnTypeExtension extends \PHPStan\Type\Php\Repla
 			return new SafeStringType();
 		}
 
-		return parent::getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		return $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 	}
 
 }

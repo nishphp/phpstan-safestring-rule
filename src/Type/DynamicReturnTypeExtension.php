@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type;
 
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -14,42 +15,44 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	DynamicMethodReturnTypeExtension, DynamicStaticMethodReturnTypeExtension
 {
 
-	/** @var Type */
-	private $type;
+	private Type $type;
 
 	/** @var string|array<string> */
-	private $func;
+	private string|array $func;
 
-	/** @var ?string */
-	private $class;
+	/** @var ?class-string */
+	private ?string $class = null;
 
-	/** @param string|array<string> $func */
-	public function __construct($func, string $type = SafeStringType::class)
+	/**
+	 * @param string|array<string> $func
+	 * @param class-string<Type> $type
+	 */
+	public function __construct(string|array $func, string $type = SafeStringType::class)
 	{
 		$this->type = new $type();
 		$this->parseArgs($func);
 	}
 
 	/** @param string|array<string> $func */
-	private function parseArgs($func): void
+	private function parseArgs(string|array $func): void
 	{
 		if (is_array($func)) {
-			$this->func = [];
+			$funcs = [];
 			foreach ($func as $f) {
-				$this->func[$f] = $f;
+				$funcs[$f] = $f;
 			}
+			$this->func = $funcs;
 			return;
 		}
 
 		$parts = explode('::', $func);
-		if (isset($parts[1])) {
+		if (isset($parts[1]) && (class_exists($parts[0]) || interface_exists($parts[0]))) {
 			$this->class = $parts[0];
 			$this->func = $parts[1];
 		} else {
@@ -57,18 +60,21 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 		}
 	}
 
+	/** @return class-string */
 	public function getClass(): string
 	{
 		return $this->class ?: 'stdClass';
 	}
 
-	/**
-	 * @param \PHPStan\Reflection\ParametersAcceptor[] $params
-	 */
-	private function getTypeFromCall(array $params): Type
+	private function getTypeFromCall(FunctionReflection|MethodReflection $functionReflection, CallLike $functionCall, Scope $scope): Type
 	{
-		$returnType = ParametersAcceptorSelector::selectSingle($params)->getReturnType();
-		if (!$returnType instanceof StringType) {
+		$returnType = ParametersAcceptorSelector::selectFromArgs(
+			$scope,
+			$functionCall->getArgs(),
+			$functionReflection->getVariants()
+		)->getReturnType();
+
+		if (!$returnType->isString()->yes()) {
 			return $returnType;
 		}
 
@@ -91,7 +97,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($functionReflection->getVariants());
+		return $this->getTypeFromCall($functionReflection, $functionCall, $scope);
 	}
 
 	public function isMethodSupported(MethodReflection $methodReflection): bool
@@ -102,7 +108,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($methodReflection->getVariants());
+		return $this->getTypeFromCall($methodReflection, $methodCall, $scope);
 	}
 
 	public function isStaticMethodSupported(MethodReflection $methodReflection): bool
@@ -112,7 +118,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $methodCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($methodReflection->getVariants());
+		return $this->getTypeFromCall($methodReflection, $methodCall, $scope);
 	}
 
 }

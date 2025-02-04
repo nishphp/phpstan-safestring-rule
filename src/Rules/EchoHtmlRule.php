@@ -19,8 +19,7 @@ use PHPStan\Type\VerbosityLevel;
 class EchoHtmlRule implements Rule
 {
 
-	/** @var RuleLevelHelper */
-	private $ruleLevelHelper;
+	private RuleLevelHelper $ruleLevelHelper;
 
 	public function __construct(RuleLevelHelper $ruleLevelHelper)
 	{
@@ -37,7 +36,6 @@ class EchoHtmlRule implements Rule
 	{
 		$messages = [];
 
-		assert($node instanceof Node\Stmt\Echo_);
 		foreach ($node->exprs as $key => $expr) {
 			$typeResult = $this->ruleLevelHelper->findTypeToCheck(
 				$scope,
