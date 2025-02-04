@@ -25,7 +25,7 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
                 'ReturnTypes::getSafe',
                 'ReturnTypes::getRaw',
             ],
-            new FunctionReturnTypeCheck(new RuleLevelHelper($this->createBroker(), true, false, true, true))
+            new FunctionReturnTypeCheck(new RuleLevelHelper($this->createReflectionProvider(), true, false, true, true, true, true))
 		);
 	}
 
@@ -41,11 +41,11 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
 				19,
 			],
 			[
-				'Function getQuery5() should return safe-string but returns non-empty-string.',
+				'Function getQuery5() should return safe-string but returns non-falsy-string.',
 				23,
 			],
 			[
-				'Method ReturnTypes::getRaw() should return safe-string but returns non-empty-string.',
+				'Method ReturnTypes::getRaw() should return safe-string but returns non-falsy-string.',
 				35,
 			],
 		]);

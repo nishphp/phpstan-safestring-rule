@@ -2,7 +2,8 @@
 
 namespace Nish\PHPStan\Type;
 
-use PHPUnit\Framework\TestCase;
+use PHPStan\Testing\PHPStanTestCase;
+use PHPStan\Reflection\ReflectionProviderStaticAccessor;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Accessory\HasPropertyType;
 use PHPStan\Type\Generic\GenericClassStringType;
@@ -10,7 +11,6 @@ use Nish\PHPStan\Test\ClassWithToString;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\Accessory\AccessoryNumericStringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\ErrorType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\StringType;
@@ -18,12 +18,18 @@ use PHPStan\Type\UnionType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\Constant\ConstantIntegerType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\ObjectType;
 
 
-class StringTypeTest extends TestCase
+class StringTypeTest extends PHPStanTestCase
 {
+	public function setUp(): void
+	{
+        ReflectionProviderStaticAccessor::registerInstance($this->createReflectionProvider());
+    }
 
 	public function dataIsSuperTypeOf(): array
 	{
@@ -143,7 +149,7 @@ class StringTypeTest extends TestCase
 	 */
 	public function testAccepts(SafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
-		$actualResult = $type->accepts($otherType, true);
+		$actualResult = $type->accepts($otherType, true)->result;
 		$this->assertSame(
 			$expectedResult->describe(),
 			$actualResult->describe(),
@@ -156,8 +162,8 @@ class StringTypeTest extends TestCase
         $type = new SafeStringType();
         $ret = $type->isCallable();
         $this->assertSame(
-            $ret->describe(),
             TrinaryLogic::createNo()->describe(),
+            $ret->describe(),
             sprintf('%s -> isCallable()', $type->describe(VerbosityLevel::precise()))
         );
     }
@@ -167,8 +173,8 @@ class StringTypeTest extends TestCase
         $type = new SafeStringType();
         $ret = $type->toInteger();
         $this->assertSame(
-            $ret->describe(VerbosityLevel::precise()),
             (new IntegerType())->describe(VerbosityLevel::precise()),
+            $ret->describe(VerbosityLevel::precise()),
             sprintf('%s -> toInteger()', $type->describe(VerbosityLevel::precise()))
         );
     }
@@ -178,8 +184,8 @@ class StringTypeTest extends TestCase
         $type = new SafeStringType();
         $ret = $type->toFloat();
         $this->assertSame(
-            $ret->describe(VerbosityLevel::precise()),
             (new FloatType())->describe(VerbosityLevel::precise()),
+            $ret->describe(VerbosityLevel::precise()),
             sprintf('%s -> toFloat()', $type->describe(VerbosityLevel::precise()))
         );
     }
@@ -188,8 +194,8 @@ class StringTypeTest extends TestCase
         $type = new SafeStringType();
         $ret = $type->toArray();
         $this->assertSame(
+            (new ConstantArrayType([new ConstantIntegerType(0)], [new SafeStringType()], [1], []))->describe(VerbosityLevel::precise()),
             $ret->describe(VerbosityLevel::precise()),
-            (new ErrorType())->describe(VerbosityLevel::precise()),
             sprintf('%s -> toArray()', $type->describe(VerbosityLevel::precise()))
         );
     }

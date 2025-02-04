@@ -13,6 +13,7 @@ use PHPStan\Type\Type;
 use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ArgumentsNormalizer;
 use PHPStan\Reflection\InitializerExprTypeResolver;
+use PHPStan\Reflection\InitializerExprContext;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Nish\PHPStan\Type\Php\SprintfFunctionDynamicReturnTypeExtension;
@@ -99,10 +100,8 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	private function getTypeConcat(Expr $node, Scope $scope): ?Type
 	{
 		$parentResult = null;
-		if ($node instanceof Expr\BinaryOp\Concat) {
-			$parentResult = $this->initializerExprTypeResolver->getConcatType($node->left, $node->right, fn (Expr $expr): Type => $scope->getType($expr));
-		}elseif ($node instanceof Expr\AssignOp\Concat) {
-			$parentResult = $this->initializerExprTypeResolver->getConcatType($node->var, $node->expr, fn (Expr $expr): Type => $scope->getType($expr));
+		if ($node instanceof Expr\BinaryOp\Concat || $node instanceof Expr\AssignOp\Concat) {
+			$parentResult = $this->initializerExprTypeResolver->getType($node, InitializerExprContext::fromScope($scope));
 		}
 
 		if ($parentResult === null)

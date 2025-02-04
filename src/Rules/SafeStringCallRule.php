@@ -66,7 +66,7 @@ class SafeStringCallRule implements Rule
 				}
 			)->getType();
 
-			if (!$type instanceof ObjectType || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
+			if (!$type->isObject() || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
 				return [];
 			}
 
@@ -113,7 +113,7 @@ class SafeStringCallRule implements Rule
 			$arg->value,
 			'',
 			static function (Type $type): bool {
-				return $type instanceof StringType;
+				return $type->isString();
 			}
 		)->getType();
 

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Type;
 
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -63,12 +64,18 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 	}
 
 	/**
+     * @param FunctionReflection|MethodReflection $functionReflection
 	 * @param \PHPStan\Reflection\ParametersAcceptor[] $params
 	 */
-	private function getTypeFromCall(array $params): Type
+	private function getTypeFromCall($functionReflection, CallLike $functionCall, Scope $scope): Type
 	{
-		$returnType = ParametersAcceptorSelector::selectSingle($params)->getReturnType();
-		if (!$returnType instanceof StringType) {
+		$returnType = ParametersAcceptorSelector::selectFromArgs(
+			$scope,
+			$functionCall->getArgs(),
+			$functionReflection->getVariants()
+		)->getReturnType();
+
+		if (!$returnType->isString()->yes()) {
 			return $returnType;
 		}
 
@@ -91,7 +98,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($functionReflection->getVariants());
+		return $this->getTypeFromCall($functionReflection, $functionCall, $scope);
 	}
 
 	public function isMethodSupported(MethodReflection $methodReflection): bool
@@ -102,7 +109,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($methodReflection->getVariants());
+		return $this->getTypeFromCall($methodReflection, $methodCall, $scope);
 	}
 
 	public function isStaticMethodSupported(MethodReflection $methodReflection): bool
@@ -112,7 +119,7 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $methodCall, Scope $scope): Type
 	{
-		return $this->getTypeFromCall($methodReflection->getVariants());
+		return $this->getTypeFromCall($methodReflection, $methodCall, $scope);
 	}
 
 }
