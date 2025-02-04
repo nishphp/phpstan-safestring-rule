@@ -1,0 +1,12 @@
+parameters:
+  level: max
+  ignoreErrors:
+    -
+      identifier: phpstanApi.method
+      path: src/Type/Php/*
+    -
+      identifier: phpstanApi.interface
+      path: src/Rules/RuleHelper.php
+    -
+      identifier: phpstanApi.instanceofType
+      path: src/Rules/RuleHelper.php
