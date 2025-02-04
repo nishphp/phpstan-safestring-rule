@@ -64,8 +64,6 @@ class SafeStringReturnTypeRule implements Rule
 			return [];
 		}
 
-		assert($node instanceof Return_);
-
 		$returnValue = $node->expr;
 		if (!$returnValue) {
 			return [];

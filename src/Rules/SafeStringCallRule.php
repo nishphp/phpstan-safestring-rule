@@ -66,11 +66,12 @@ class SafeStringCallRule implements Rule
 				}
 			)->getType();
 
-			if (!$type->isObject() || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
+            $classNames = $type->getObjectClassNames();
+			if (!$classNames || !$type->canCallMethods()->yes() || !$type->hasMethod($name)->yes()) {
 				return [];
 			}
 
-			$func = $type->getClassName() . '::'
+			$func = $classNames[0] . '::'
 				  . $node->name->toString();
 
 		} elseif ($node instanceof Expr\StaticCall) {
@@ -103,17 +104,18 @@ class SafeStringCallRule implements Rule
 		}
 		$index = $this->patterns[$func];
 
-		if (!isset($node->args[$index])) {
+        $args = $node->getArgs();
+		if (!isset($args[$index])) {
 			return [];
 		}
-		$arg = $node->args[$index];
+		$arg = $args[$index];
 
 		$type = $this->ruleLevelHelper->findTypeToCheck(
 			$scope,
 			$arg->value,
 			'',
 			static function (Type $type): bool {
-				return $type->isString();
+				return $type->isString()->yes();
 			}
 		)->getType();
 
