@@ -16,7 +16,7 @@ class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTyp
 {
 
 	public function __construct(
-		private \PHPStan\Type\Php\ImplodeFunctionReturnTypeExtension $parentClass,
+		private \PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension $parentClass,
 	)
 	{
 	}
