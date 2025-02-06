@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\PhpDoc;
 
-use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use Nish\PHPStan\Type\Accessory\AccessorySafeHtmlStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;

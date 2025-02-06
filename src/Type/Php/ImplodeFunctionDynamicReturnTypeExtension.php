@@ -50,7 +50,7 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 			return $originalResult;
 		}
 
-        return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+		return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
 	}
 
 }

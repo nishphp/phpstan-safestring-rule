@@ -19,8 +19,8 @@ use PHPStan\Reflection\InitializerExprTypeResolver;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
-use PHPStan\Type\Type;
 use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
 class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeResolverExtension

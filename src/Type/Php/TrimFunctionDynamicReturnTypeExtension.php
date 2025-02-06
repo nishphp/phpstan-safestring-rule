@@ -37,15 +37,15 @@ class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTyp
 		$argType = $scope->getType($args[0]->value);
 
 		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
-        if (!$originalResult){
-            return null;
-        }
-
-		if (RuleHelper::accepts($argType)) {
-            return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+		if (!$originalResult) {
+			return null;
 		}
 
-        return $originalResult;
+		if (RuleHelper::accepts($argType)) {
+			return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+		}
+
+		return $originalResult;
 	}
 
 }

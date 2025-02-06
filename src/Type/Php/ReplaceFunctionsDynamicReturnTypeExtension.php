@@ -33,10 +33,10 @@ class ReplaceFunctionsDynamicReturnTypeExtension implements DynamicFunctionRetur
 		Scope $scope
 	): Type
 	{
-        $originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 
 		if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
-            return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+			return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
 		}
 
 		return $originalResult;

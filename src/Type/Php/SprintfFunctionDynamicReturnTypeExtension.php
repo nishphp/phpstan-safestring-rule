@@ -40,7 +40,7 @@ class SprintfFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 
 		if (!RuleHelper::accepts($originalResult)) {
 			if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
-                return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+				return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
 			}
 		}
 

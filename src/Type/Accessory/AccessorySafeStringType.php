@@ -7,18 +7,18 @@ namespace Nish\PHPStan\Type\Accessory;
 use PHPStan\Php\PhpVersion;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Reflection\ClassMemberAccessAnswerer;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\TrinaryLogic;
-use PHPStan\Type\Accessory\AccessoryType;
 use PHPStan\Type\AcceptsResult;
+use PHPStan\Type\Accessory\AccessoryType;
 use PHPStan\Type\BenevolentUnionType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\CompoundType;
-use PHPStan\Type\Type;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\GeneralizePrecision;
@@ -27,20 +27,22 @@ use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\Traits\NonArrayTypeTrait;
 use PHPStan\Type\Traits\NonCallableTypeTrait;
 use PHPStan\Type\Traits\NonGenericTypeTrait;
 use PHPStan\Type\Traits\NonIterableTypeTrait;
-use PHPStan\Type\Traits\NonRemoveableTypeTrait;
 use PHPStan\Type\Traits\NonObjectTypeTrait;
+use PHPStan\Type\Traits\NonRemoveableTypeTrait;
 use PHPStan\Type\Traits\UndecidedBooleanTypeTrait;
 use PHPStan\Type\Traits\UndecidedComparisonCompoundTypeTrait;
-use PHPStan\Type\UnionType;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
+use PHPStan\Type\VerbosityLevel;
 
 class AccessorySafeStringType implements CompoundType, AccessoryType
 {
+
 	use NonArrayTypeTrait;
 	use NonCallableTypeTrait;
 	use NonObjectTypeTrait;
@@ -49,7 +51,6 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 	use UndecidedComparisonCompoundTypeTrait;
 	use NonGenericTypeTrait;
 	use NonRemoveableTypeTrait;
-
 
 	public function describe(VerbosityLevel $level): string
 	{
@@ -106,21 +107,29 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 		return IsSuperTypeOfResult::createNo();
 	}
 
+	/**
+	 * @return list<string>
+	 */
 	public function getReferencedClasses(): array
 	{
 		return [];
 	}
 
+	/** @return list<non-empty-string> */
 	public function getObjectClassNames(): array
 	{
 		return [];
 	}
 
+	/**
+	 * @return list<ClassReflection>
+	 */
 	public function getObjectClassReflections(): array
 	{
 		return [];
 	}
 
+	/** @return list<ConstantStringType> */
 	public function getConstantStrings(): array
 	{
 		return [];
@@ -132,7 +141,7 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 			return $otherType->isSuperTypeOf($this);
 		}
 
-        return new IsSuperTypeOfResult($otherType->isString(), []);
+		return new IsSuperTypeOfResult($otherType->isString(), []);
 	}
 
 	public function isAcceptedBy(Type $acceptingType, bool $strictTypes): AcceptsResult
@@ -166,7 +175,7 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 			return new ErrorType();
 		}
 
-        return TypeCombinator::intersect(new StringType(), new AccessorySafeStringType());
+		return TypeCombinator::intersect(new StringType(), new AccessorySafeStringType());
 	}
 
 	public function setOffsetValueType(?Type $offsetType, Type $valueType, bool $unionValues = true): Type
@@ -178,7 +187,7 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 		}
 
 		if ($this->accepts($valueType, true)->yes()) {
-            return TypeCombinator::intersect($valueType, new AccessorySafeStringType());
+			return TypeCombinator::intersect($valueType, new AccessorySafeStringType());
 		}
 
 		return new StringType();
@@ -255,11 +264,17 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 		return TrinaryLogic::createMaybe();
 	}
 
+	/**
+	 * @return list<ConstantScalarType>
+	 */
 	public function getConstantScalarTypes(): array
 	{
 		return [];
 	}
 
+	/**
+	 * @return list<int|float|string|bool|null>
+	 */
 	public function getConstantScalarValues(): array
 	{
 		return [];
@@ -382,6 +397,9 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 		]);
 	}
 
+	/**
+	 * @return list<Type>
+	 */
 	public function getFiniteTypes(): array
 	{
 		return [];

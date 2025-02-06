@@ -20,4 +20,5 @@ class AccessorySafeHtmlStringType extends AccessorySafeStringType
 	{
 		return new IdentifierTypeNode('safehtml-string');
 	}
+
 }

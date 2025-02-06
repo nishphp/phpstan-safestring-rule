@@ -145,7 +145,6 @@ class RuleHelper
 	public static function isSafeAllArgs(FuncCall $functionCall, Scope $scope): bool
 	{
 		$isSafe = true;
-		$isConstantOnly = true;
 		foreach ($functionCall->getArgs() as $arg) {
 			$argType = $scope->getType($arg->value);
 			if (!self::accepts($argType)) {
