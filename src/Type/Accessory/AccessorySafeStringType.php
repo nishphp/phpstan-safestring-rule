@@ -173,10 +173,6 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 			return IsSuperTypeOfResult::createMaybe();
 		}
 
-		if ($otherType->isNonEmptyString()->yes()) {
-			return IsSuperTypeOfResult::createYes();
-		}
-
 		return IsSuperTypeOfResult::createYes();
 	}
 
@@ -358,7 +354,7 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 
 	public function isNonFalsyString(): TrinaryLogic
 	{
-		return TrinaryLogic::createYes();
+		return TrinaryLogic::createMaybe();
 	}
 
 	public function isLiteralString(): TrinaryLogic
