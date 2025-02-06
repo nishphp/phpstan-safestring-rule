@@ -14,8 +14,5 @@ parameters:
       identifier: phpstanApi.trait
       path: src/Type/Accessory/*
     -
-      identifier: phpstanApi.interface
-      path: src/Rules/RuleHelper.php
-    -
       identifier: phpstanApi.instanceofType
       path: src/Rules/RuleHelper.php

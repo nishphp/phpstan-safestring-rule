@@ -64,10 +64,6 @@ class RuleHelper
 		if ($type instanceof UnionType) {
 			$innerTypes = $type->getTypes();
 			foreach ($innerTypes as $innerType) {
-				if ($innerType instanceof AccessoryType) {
-					continue;
-				}
-
 				if (self::accepts($innerType)) {
 					continue;
 				}
@@ -82,10 +78,6 @@ class RuleHelper
 		if ($type instanceof IntersectionType) {
 			$innerTypes = $type->getTypes();
 			foreach ($innerTypes as $innerType) {
-				if ($innerType instanceof AccessoryType) {
-					continue;
-				}
-
 				if (self::accepts($innerType)) {
 					return true;
 				}
