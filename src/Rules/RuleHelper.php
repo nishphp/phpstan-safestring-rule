@@ -7,7 +7,6 @@ namespace Nish\PHPStan\Rules;
 use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\Accessory\AccessoryType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\IntersectionType;
