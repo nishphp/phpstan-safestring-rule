@@ -141,7 +141,43 @@ class AccessorySafeStringType implements CompoundType, AccessoryType
 			return $otherType->isSuperTypeOf($this);
 		}
 
-		return new IsSuperTypeOfResult($otherType->isString(), []);
+		if (!$otherType->isString()->yes()) {
+			return IsSuperTypeOfResult::createNo();
+		}
+
+		if ($otherType->isNumericString()->yes()) {
+			return IsSuperTypeOfResult::createMaybe();
+		}
+
+		if ($otherType->isClassString()->yes()) {
+			return IsSuperTypeOfResult::createMaybe();
+		}
+
+		if (count($otherType->getConstantStrings()) > 0) {
+			return IsSuperTypeOfResult::createNo();
+		}
+
+		if ($otherType->isLiteralString()->yes()) {
+			return IsSuperTypeOfResult::createNo();
+		}
+
+		if ($otherType->isNonEmptyString()->yes()) {
+			return IsSuperTypeOfResult::createYes();
+		}
+
+		if ($otherType->isLowercaseString()->yes()) {
+			return IsSuperTypeOfResult::createMaybe();
+		}
+
+		if ($otherType->isNonFalsyString()->yes()) {
+			return IsSuperTypeOfResult::createMaybe();
+		}
+
+		if ($otherType->isNonEmptyString()->yes()) {
+			return IsSuperTypeOfResult::createYes();
+		}
+
+		return IsSuperTypeOfResult::createYes();
 	}
 
 	public function isAcceptedBy(Type $acceptingType, bool $strictTypes): AcceptsResult

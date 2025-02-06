@@ -51,11 +51,6 @@ class StringTypeTest extends PHPStanTestCase
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
-				new StringType(),
-				TrinaryLogic::createNo(),
-			],
-			[
-				new Accessory\AccessorySafeStringType(),
 				new UnionType([
                     new StringType(),
                     new IntegerType(),
@@ -198,4 +193,68 @@ class StringTypeTest extends PHPStanTestCase
             sprintf('%s -> toArray()', $type->describe(VerbosityLevel::precise()))
         );
     }
+
+	public function dataIsSubTypeOf(): array
+	{
+		return [
+			[
+				new Accessory\AccessorySafeStringType(),
+				new GenericClassStringType(new ObjectType(\Exception::class)),
+				TrinaryLogic::createMaybe(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
+				new ConstantStringType('foo'),
+				TrinaryLogic::createNo(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
+				new StringType(),
+				TrinaryLogic::createYes(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
+				new UnionType([
+                    new StringType(),
+                    new IntegerType(),
+                ]),
+				TrinaryLogic::createYes(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
+				new Accessory\AccessorySafeStringType(),
+				TrinaryLogic::createYes(),
+			],
+            [
+                new Accessory\AccessorySafeStringType(),
+                new IntersectionType([
+                    new StringType(),
+                    new AccessoryLiteralStringType(),
+                ]),
+                TrinaryLogic::createNo(),
+            ],
+            [
+                new Accessory\AccessorySafeStringType(),
+                new IntersectionType([
+                    new StringType(),
+                    new AccessoryNumericStringType(),
+                ]),
+                TrinaryLogic::createMaybe(),
+            ],
+		];
+	}
+
+	/**
+	 * @dataProvider dataIsSubTypeOf
+	 */
+	public function testIsSubTypeOf(Accessory\AccessorySafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	{
+		$actualResult = $type->isSubTypeOf($otherType);
+		$this->assertSame(
+			$expectedResult->describe(),
+			$actualResult->describe(),
+			sprintf('%s -> isSubTypeOf(%s)', $type->describe(VerbosityLevel::precise()), $otherType->describe(VerbosityLevel::precise()))
+		);
+	}
+
 }
