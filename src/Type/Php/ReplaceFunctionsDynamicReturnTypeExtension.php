@@ -5,12 +5,13 @@ declare(strict_types = 1);
 namespace Nish\PHPStan\Type\Php;
 
 use Nish\PHPStan\Rules\RuleHelper;
-use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 
 class ReplaceFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
@@ -32,11 +33,13 @@ class ReplaceFunctionsDynamicReturnTypeExtension implements DynamicFunctionRetur
 		Scope $scope
 	): Type
 	{
+        $originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+
 		if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
-			return new SafeStringType();
+            return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
 		}
 
-		return $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+		return $originalResult;
 	}
 
 }

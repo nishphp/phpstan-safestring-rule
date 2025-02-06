@@ -5,12 +5,13 @@ declare(strict_types = 1);
 namespace Nish\PHPStan\Type\Php;
 
 use Nish\PHPStan\Rules\RuleHelper;
-use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 
 class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
@@ -49,7 +50,7 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 			return $originalResult;
 		}
 
-		return new SafeStringType();
+        return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
 	}
 
 }

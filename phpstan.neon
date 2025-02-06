@@ -5,6 +5,15 @@ parameters:
       identifier: phpstanApi.method
       path: src/Type/Php/*
     -
+      identifier: phpstanApi.instanceofType
+      path: src/Type/Accessory/*
+    -
+      identifier: phpstanApi.interface
+      path: src/Type/Accessory/*
+    -
+      identifier: phpstanApi.trait
+      path: src/Type/Accessory/*
+    -
       identifier: phpstanApi.interface
       path: src/Rules/RuleHelper.php
     -

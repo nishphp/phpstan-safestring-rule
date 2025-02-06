@@ -35,27 +35,27 @@ class StringTypeTest extends PHPStanTestCase
 	{
 		return [
 			[
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				new ConstantStringType('foo'),
 				TrinaryLogic::createYes(),
 			],
 			[
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				new UnionType([
                     new StringType(),
                     new IntegerType(),
@@ -63,12 +63,12 @@ class StringTypeTest extends PHPStanTestCase
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeStringType(),
-				new SafeStringType(),
+				new Accessory\AccessorySafeStringType(),
+				new Accessory\AccessorySafeStringType(),
 				TrinaryLogic::createYes(),
 			],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new IntersectionType([
                     new StringType(),
                     new AccessoryLiteralStringType(),
@@ -76,7 +76,7 @@ class StringTypeTest extends PHPStanTestCase
                 TrinaryLogic::createYes(),
             ],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new IntersectionType([
                     new StringType(),
                     new AccessoryNumericStringType(),
@@ -89,7 +89,7 @@ class StringTypeTest extends PHPStanTestCase
 	/**
 	 * @dataProvider dataIsSuperTypeOf
 	 */
-	public function testIsSuperTypeOf(SafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testIsSuperTypeOf(Accessory\AccessorySafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->isSuperTypeOf($otherType);
 		$this->assertSame(
@@ -103,7 +103,7 @@ class StringTypeTest extends PHPStanTestCase
 	{
         return [
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new IntersectionType([
                     new ObjectType(ClassWithToString::class),
                     new HasPropertyType('foo'),
@@ -111,27 +111,27 @@ class StringTypeTest extends PHPStanTestCase
                 TrinaryLogic::createNo(),
             ],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new ClassStringType(),
                 TrinaryLogic::createNo(),
             ],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new ConstantStringType('foo'),
                 TrinaryLogic::createYes(),
             ],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new StringType(),
                 TrinaryLogic::createNo(),
             ],
             [
-                new SafeStringType(),
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 TrinaryLogic::createYes(),
             ],
             [
-                new SafeStringType(),
+                new Accessory\AccessorySafeStringType(),
                 new IntersectionType([
                     new StringType(),
                     new AccessoryLiteralStringType(),
@@ -143,11 +143,10 @@ class StringTypeTest extends PHPStanTestCase
 
 	/**
 	 * @dataProvider dataAccepts
-	 * @param \Nish\PHPStan\Type\SafeStringType $type
 	 * @param Type $otherType
 	 * @param TrinaryLogic $expectedResult
 	 */
-	public function testAccepts(SafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testAccepts(Accessory\AccessorySafeStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->accepts($otherType, true)->result;
 		$this->assertSame(
@@ -159,7 +158,7 @@ class StringTypeTest extends PHPStanTestCase
 
     public function testIsCallable()
     {
-        $type = new SafeStringType();
+        $type = new Accessory\AccessorySafeStringType();
         $ret = $type->isCallable();
         $this->assertSame(
             TrinaryLogic::createNo()->describe(),
@@ -170,7 +169,7 @@ class StringTypeTest extends PHPStanTestCase
 
     public function testToInt()
     {
-        $type = new SafeStringType();
+        $type = new Accessory\AccessorySafeStringType();
         $ret = $type->toInteger();
         $this->assertSame(
             (new IntegerType())->describe(VerbosityLevel::precise()),
@@ -181,7 +180,7 @@ class StringTypeTest extends PHPStanTestCase
 
     public function testToFloat()
     {
-        $type = new SafeStringType();
+        $type = new Accessory\AccessorySafeStringType();
         $ret = $type->toFloat();
         $this->assertSame(
             (new FloatType())->describe(VerbosityLevel::precise()),
@@ -191,10 +190,10 @@ class StringTypeTest extends PHPStanTestCase
     }
     public function testToArray()
     {
-        $type = new SafeStringType();
+        $type = new Accessory\AccessorySafeStringType();
         $ret = $type->toArray();
         $this->assertSame(
-            (new ConstantArrayType([new ConstantIntegerType(0)], [new SafeStringType()], [1], []))->describe(VerbosityLevel::precise()),
+            (new ConstantArrayType([new ConstantIntegerType(0)], [new Accessory\AccessorySafeStringType()], [1], []))->describe(VerbosityLevel::precise()),
             $ret->describe(VerbosityLevel::precise()),
             sprintf('%s -> toArray()', $type->describe(VerbosityLevel::precise()))
         );

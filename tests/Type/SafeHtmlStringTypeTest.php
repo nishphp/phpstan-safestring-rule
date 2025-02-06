@@ -31,27 +31,27 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 	{
 		return [
 			[
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				new ConstantStringType('foo'),
 				TrinaryLogic::createYes(),
 			],
 			[
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				new StringType(),
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				new UnionType([
                     new StringType(),
                     new IntegerType(),
@@ -59,8 +59,8 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 				TrinaryLogic::createNo(),
 			],
 			[
-				new SafeHtmlStringType(),
-				new SafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
+				new Accessory\AccessorySafeHtmlStringType(),
 				TrinaryLogic::createYes(),
 			],
 		];
@@ -69,7 +69,7 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 	/**
 	 * @dataProvider dataIsSuperTypeOf
 	 */
-	public function testIsSuperTypeOf(SafeHtmlStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testIsSuperTypeOf(Accessory\AccessorySafeHtmlStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->isSuperTypeOf($otherType);
 		$this->assertSame(
@@ -83,7 +83,7 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 	{
         return [
             [
-			new SafeHtmlStringType(),
+			new Accessory\AccessorySafeHtmlStringType(),
 			new IntersectionType([
 				new ObjectType(ClassWithToString::class),
 				new HasPropertyType('foo'),
@@ -91,12 +91,12 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 			TrinaryLogic::createNo(),
             ],
             [
-                new SafeHtmlStringType(),
+                new Accessory\AccessorySafeHtmlStringType(),
                 new ClassStringType(),
                 TrinaryLogic::createNo(),
             ],
             [
-                new SafeHtmlStringType(),
+                new Accessory\AccessorySafeHtmlStringType(),
                 new StringType(),
                 TrinaryLogic::createNo(),
             ],
@@ -105,11 +105,10 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 
 	/**
 	 * @dataProvider dataAccepts
-	 * @param \Nish\PHPStan\Type\SafeHtmlStringType $type
 	 * @param Type $otherType
 	 * @param TrinaryLogic $expectedResult
 	 */
-	public function testAccepts(SafeHtmlStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
+	public function testAccepts(Accessory\AccessorySafeHtmlStringType $type, Type $otherType, TrinaryLogic $expectedResult): void
 	{
 		$actualResult = $type->accepts($otherType, true)->result;
 		$this->assertSame(

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\Rules;
 
-use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Accessory\AccessoryType;
@@ -23,7 +23,7 @@ class RuleHelper
 			return false;
 		}
 
-		if ($type instanceof SafeStringType ||
+		if ($type instanceof AccessorySafeStringType ||
 			count($type->getConstantStrings()) > 0) {
 			return true;
 		}
@@ -148,20 +148,12 @@ class RuleHelper
 		$isConstantOnly = true;
 		foreach ($functionCall->getArgs() as $arg) {
 			$argType = $scope->getType($arg->value);
-			if (count($argType->getConstantScalarTypes()) === 0) {
-				$isConstantOnly = false;
-			}
-
 			if (!self::accepts($argType)) {
 				$isSafe = false;
 			}
 		}
 
-		// $isConstantOnly: true, $isSafe: true => transfer parent class (constant string?)
-		// $isConstantOnly: true, $isSafe: false => nothing
-		// $isConstantOnly: false, $isSafe: true => safe string
-		// $isConstantOnly: false, $isSafe: false => transfer parent class (string?)
-		return !$isConstantOnly && $isSafe;
+		return $isSafe;
 	}
 
 }

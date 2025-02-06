@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Nish\PHPStan\PhpDoc;
 
-use Nish\PHPStan\Type\SafeHtmlStringType;
-use Nish\PHPStan\Type\SafeStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
+use Nish\PHPStan\Type\Accessory\AccessorySafeHtmlStringType;
 use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -18,10 +18,10 @@ class TypeNodeResolverExtension implements \PHPStan\PhpDoc\TypeNodeResolverExten
 	{
 		if ($typeNode instanceof IdentifierTypeNode) {
 			if ($typeNode->name === 'safehtml-string') {
-				return new SafeHtmlStringType();
+				return new AccessorySafeHtmlStringType();
 			}
 			if ($typeNode->name === 'safe-string') {
-				return new SafeStringType();
+				return new AccessorySafeStringType();
 			}
 		}
 

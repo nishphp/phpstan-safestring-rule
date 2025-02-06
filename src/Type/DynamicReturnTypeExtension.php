@@ -31,11 +31,10 @@ class DynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension,
 
 	/**
 	 * @param string|array<string> $func
-	 * @param class-string<Type> $type
 	 */
-	public function __construct(string|array $func, string $type = SafeStringType::class)
+	public function __construct(string|array $func, Type $type)
 	{
-		$this->type = new $type();
+		$this->type = $type;
 		$this->parseArgs($func);
 	}
 

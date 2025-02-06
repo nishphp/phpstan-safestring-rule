@@ -20,6 +20,8 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
+use PHPStan\Type\StringType;
+use PHPStan\Type\TypeCombinator;
 
 class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeResolverExtension
 {
@@ -143,7 +145,7 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 		$rightStringType = $scope->getType($right)->toString();
 
 		if (RuleHelper::accepts($leftStringType) && RuleHelper::accepts($rightStringType)) {
-			return new SafeStringType();
+			return TypeCombinator::intersect(new StringType(), new Accessory\AccessorySafeStringType());
 		}
 
 		return null;

@@ -23,7 +23,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 {
     public function testFunction()
     {
-        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
+        $ext = new DynamicReturnTypeExtension('h', new Accessory\AccessorySafeHtmlStringType());
 
         $ref = $this->createMock(FunctionReflection::class);
         $ref->method('getName')->willReturn('h');
@@ -42,7 +42,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 
     public function testFunctionAccept()
     {
-        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
+        $ext = new DynamicReturnTypeExtension('h', new Accessory\AccessorySafeHtmlStringType());
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new StringType());
@@ -51,7 +51,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
             [$acceptor]
         );
         $this->assertInstanceOf(
-            SafeHtmlStringType::class,
+            Accessory\AccessorySafeHtmlStringType::class,
             $ext->getTypeFromFunctionCall(
                 $ref,
                 $this->createMock(FuncCall::class),
@@ -60,7 +60,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
 
     public function testFunctionNotAccept()
     {
-        $ext = new DynamicReturnTypeExtension('h', SafeHtmlStringType::class);
+        $ext = new DynamicReturnTypeExtension('h', new Accessory\AccessorySafeHtmlStringType());
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new IntegerType());
@@ -80,7 +80,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testFunctions()
     {
         $ext = new DynamicReturnTypeExtension(
-            ['h', 'raw'], SafeHtmlStringType::class);
+            ['h', 'raw'], new Accessory\AccessorySafeHtmlStringType());
 
         $ref = $this->createMock(FunctionReflection::class);
         $ref->method('getName')->willReturn('h');
@@ -98,7 +98,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethod()
     {
         $ext = new DynamicReturnTypeExtension(
-            'App\Html::checkbox', SafeHtmlStringType::class);
+            'App\Html::checkbox', new Accessory\AccessorySafeHtmlStringType());
 
         $this->assertEquals('App\Html', $ext->getClass());
 
@@ -117,7 +117,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethodAccept()
     {
         $ext = new DynamicReturnTypeExtension(
-            'App\Html::checkbox', SafeHtmlStringType::class);
+            'App\Html::checkbox', new Accessory\AccessorySafeHtmlStringType());
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new ConstantStringType('foo'));
@@ -126,7 +126,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
             [$acceptor]
         );
         $this->assertInstanceOf(
-            SafeHtmlStringType::class,
+            Accessory\AccessorySafeHtmlStringType::class,
             $ext->getTypeFromMethodCall(
                 $ref,
                 $this->createMock(MethodCall::class),
@@ -136,7 +136,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testMethodNotAccept()
     {
         $ext = new DynamicReturnTypeExtension(
-            'App\Html::checkbox', SafeHtmlStringType::class);
+            'App\Html::checkbox', new Accessory\AccessorySafeHtmlStringType());
 
         $acceptor = $this->createMock(ParametersAcceptor::class);
         $acceptor->method('getReturnType')->willReturn(new ObjectType('stdClass'));
@@ -156,7 +156,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
     public function testStaticMethod()
     {
         $ext = new DynamicReturnTypeExtension(
-            'App\Html::checkbox', SafeHtmlStringType::class);
+            'App\Html::checkbox', new Accessory\AccessorySafeHtmlStringType());
 
         $this->assertEquals('App\Html', $ext->getClass());
 
@@ -179,7 +179,7 @@ class DynamicReturnTypeExtensionTest extends TestCase
             [$acceptor]
         );
         $this->assertInstanceOf(
-            SafeHtmlStringType::class,
+            Accessory\AccessorySafeHtmlStringType::class,
             $ext->getTypeFromStaticMethodCall(
                 $ref,
                 $this->createMock(StaticCall::class),
