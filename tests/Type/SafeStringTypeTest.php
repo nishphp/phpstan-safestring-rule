@@ -199,18 +199,28 @@ class StringTypeTest extends PHPStanTestCase
 		return [
 			[
 				new Accessory\AccessorySafeStringType(),
+				new ObjectType(\Exception::class),
+				TrinaryLogic::createNo(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
+				new ConstantArrayType([new ConstantIntegerType(0)], [new StringType()]),
+				TrinaryLogic::createNo(),
+			],
+			[
+				new Accessory\AccessorySafeStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
 				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
 				new ConstantStringType('foo'),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
 				new StringType(),
-				TrinaryLogic::createYes(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
@@ -218,7 +228,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new IntegerType(),
                 ]),
-				TrinaryLogic::createYes(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
@@ -231,7 +241,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new AccessoryLiteralStringType(),
                 ]),
-                TrinaryLogic::createNo(),
+                TrinaryLogic::createMaybe(),
             ],
             [
                 new Accessory\AccessorySafeStringType(),

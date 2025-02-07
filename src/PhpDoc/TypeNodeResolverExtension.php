@@ -9,6 +9,8 @@ use Nish\PHPStan\Type\Accessory\AccessorySafeStringType;
 use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 class TypeNodeResolverExtension implements \PHPStan\PhpDoc\TypeNodeResolverExtension
@@ -18,10 +20,16 @@ class TypeNodeResolverExtension implements \PHPStan\PhpDoc\TypeNodeResolverExten
 	{
 		if ($typeNode instanceof IdentifierTypeNode) {
 			if ($typeNode->name === 'safehtml-string') {
-				return new AccessorySafeHtmlStringType();
+				return new IntersectionType([
+					new StringType(),
+					new AccessorySafeHtmlStringType(),
+				]);
 			}
 			if ($typeNode->name === 'safe-string') {
-				return new AccessorySafeStringType();
+				return new IntersectionType([
+					new StringType(),
+					new AccessorySafeStringType(),
+				]);
 			}
 		}
 
