@@ -8,6 +8,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\AcceptsResult;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
+use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 
@@ -38,6 +39,15 @@ class AccessorySafeStringType extends AccessoryLiteralStringType
 		}
 
 		return parent::accepts($type, $strictTypes);
+	}
+
+	public function isSubTypeOf(Type $otherType): IsSuperTypeOfResult
+	{
+		if ($otherType instanceof self) {
+			return IsSuperTypeOfResult::createYes();
+		}
+
+		return parent::isSubTypeOf($otherType);
 	}
 
 	public function toPhpDocNode(): TypeNode
