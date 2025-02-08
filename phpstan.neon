@@ -5,13 +5,10 @@ parameters:
       identifier: phpstanApi.method
       path: src/Type/Php/*
     -
-      identifier: phpstanApi.instanceofType
+      identifier: phpstanApi.class
       path: src/Type/Accessory/*
     -
-      identifier: phpstanApi.interface
-      path: src/Type/Accessory/*
-    -
-      identifier: phpstanApi.trait
+      identifier: phpstanApi.method
       path: src/Type/Accessory/*
     -
       identifier: phpstanApi.instanceofType

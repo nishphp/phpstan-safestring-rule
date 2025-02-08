@@ -37,7 +37,7 @@ class StringTypeTest extends PHPStanTestCase
 			[
 				new Accessory\AccessorySafeStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
@@ -47,7 +47,7 @@ class StringTypeTest extends PHPStanTestCase
 			[
 				new Accessory\AccessorySafeStringType(),
 				new StringType(),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
@@ -55,7 +55,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new IntegerType(),
                 ]),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeStringType(),
@@ -76,7 +76,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new AccessoryNumericStringType(),
                 ]),
-                TrinaryLogic::createYes(),
+                TrinaryLogic::createMaybe(),
             ],
 		];
 	}
@@ -108,7 +108,7 @@ class StringTypeTest extends PHPStanTestCase
             [
                 new Accessory\AccessorySafeStringType(),
                 new ClassStringType(),
-                TrinaryLogic::createNo(),
+                TrinaryLogic::createMaybe(),
             ],
             [
                 new Accessory\AccessorySafeStringType(),
@@ -118,7 +118,7 @@ class StringTypeTest extends PHPStanTestCase
             [
                 new Accessory\AccessorySafeStringType(),
                 new StringType(),
-                TrinaryLogic::createNo(),
+                TrinaryLogic::createMaybe(),
             ],
             [
                 new Accessory\AccessorySafeStringType(),
@@ -156,7 +156,7 @@ class StringTypeTest extends PHPStanTestCase
         $type = new Accessory\AccessorySafeStringType();
         $ret = $type->isCallable();
         $this->assertSame(
-            TrinaryLogic::createNo()->describe(),
+            TrinaryLogic::createMaybe()->describe(),
             $ret->describe(),
             sprintf('%s -> isCallable()', $type->describe(VerbosityLevel::precise()))
         );

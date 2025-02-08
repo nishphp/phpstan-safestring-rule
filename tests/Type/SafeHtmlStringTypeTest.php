@@ -33,7 +33,7 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 			[
 				new Accessory\AccessorySafeHtmlStringType(),
 				new GenericClassStringType(new ObjectType(\Exception::class)),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeHtmlStringType(),
@@ -43,12 +43,7 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
 			[
 				new Accessory\AccessorySafeHtmlStringType(),
 				new StringType(),
-				TrinaryLogic::createNo(),
-			],
-			[
-				new Accessory\AccessorySafeHtmlStringType(),
-				new StringType(),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeHtmlStringType(),
@@ -56,7 +51,7 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new IntegerType(),
                 ]),
-				TrinaryLogic::createNo(),
+				TrinaryLogic::createMaybe(),
 			],
 			[
 				new Accessory\AccessorySafeHtmlStringType(),
@@ -93,12 +88,12 @@ class SafeHtmlStringTypeTest extends PHPStanTestCase
             [
                 new Accessory\AccessorySafeHtmlStringType(),
                 new ClassStringType(),
-                TrinaryLogic::createNo(),
+                TrinaryLogic::createMaybe(),
             ],
             [
                 new Accessory\AccessorySafeHtmlStringType(),
                 new StringType(),
-                TrinaryLogic::createNo(),
+                TrinaryLogic::createMaybe(),
             ],
         ];
 	}
