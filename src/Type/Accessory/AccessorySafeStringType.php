@@ -6,6 +6,7 @@ namespace Nish\PHPStan\Type\Accessory;
 
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\TrinaryLogic;
 use PHPStan\Type\AcceptsResult;
 use PHPStan\Type\Accessory\AccessoryLiteralStringType;
 use PHPStan\Type\IsSuperTypeOfResult;
@@ -48,6 +49,11 @@ class AccessorySafeStringType extends AccessoryLiteralStringType
 		}
 
 		return parent::isSubTypeOf($otherType);
+	}
+
+	public function isLiteralString(): TrinaryLogic
+	{
+		return TrinaryLogic::createMaybe();
 	}
 
 	public function toPhpDocNode(): TypeNode

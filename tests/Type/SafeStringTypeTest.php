@@ -68,7 +68,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new AccessoryLiteralStringType(),
                 ]),
-                TrinaryLogic::createYes(),
+                TrinaryLogic::createMaybe(),
             ],
             [
                 new Accessory\AccessorySafeStringType(),
