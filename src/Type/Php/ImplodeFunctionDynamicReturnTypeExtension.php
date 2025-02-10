@@ -42,10 +42,6 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 		$glueType = $scope->getType($args[0]->value);
 		$piecesType = $scope->getType($args[1]->value);
 
-		if (!RuleHelper::acceptsString($glueType)) {
-			return $originalResult;
-		}
-
 		if (!RuleHelper::accepts($piecesType)) {
 			return $originalResult;
 		}
