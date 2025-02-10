@@ -23,7 +23,7 @@ class RuleHelper
 		}
 
 		if ($type instanceof AccessorySafeStringType ||
-			count($type->getConstantStrings()) > 0) {
+			$type->isConstantValue()->yes()) {
 			return true;
 		}
 

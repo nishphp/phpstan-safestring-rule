@@ -68,7 +68,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new AccessoryLiteralStringType(),
                 ]),
-                TrinaryLogic::createMaybe(),
+                TrinaryLogic::createYes(),
             ],
             [
                 new Accessory\AccessorySafeStringType(),
@@ -76,7 +76,7 @@ class StringTypeTest extends PHPStanTestCase
                     new StringType(),
                     new AccessoryNumericStringType(),
                 ]),
-                TrinaryLogic::createMaybe(),
+                TrinaryLogic::createYes(),
             ],
 		];
 	}

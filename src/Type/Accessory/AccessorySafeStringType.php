@@ -27,7 +27,7 @@ class AccessorySafeStringType extends AccessoryLiteralStringType
 			return AcceptsResult::createYes();
 		}
 
-		if ($type->isString()->yes() && count($type->getConstantStrings()) !== 0) {
+		if ($type->isString()->yes() && $type->isConstantValue()->yes()) {
 			return AcceptsResult::createYes();
 		}
 
@@ -40,6 +40,21 @@ class AccessorySafeStringType extends AccessoryLiteralStringType
 		}
 
 		return parent::accepts($type, $strictTypes);
+	}
+
+	public function isSuperTypeOf(Type $type): IsSuperTypeOfResult
+	{
+		if ($type->isString()->yes() && $type->isConstantValue()->yes()) {
+			return IsSuperTypeOfResult::createYes();
+		}
+		if ($type->isLiteralString()->yes()) {
+			return IsSuperTypeOfResult::createYes();
+		}
+		if ($type->isNumericString()->yes()) {
+			return IsSuperTypeOfResult::createYes();
+		}
+
+		return parent::isSuperTypeOf($type);
 	}
 
 	public function isSubTypeOf(Type $otherType): IsSuperTypeOfResult
