@@ -41,6 +41,16 @@ class IntegrationTest extends TestCase
             'line' => 48,
             'ignorable' => true,
         ],
+        [
+            'message' => 'echo() Parameter #1 (non-falsy-string|safehtml-string) is not safehtml-string.',
+            'line' => 56,
+            'ignorable' => true,
+        ],
+        [
+            'message' => 'echo() Parameter #1 (non-falsy-string|safehtml-string) is not safehtml-string.',
+            'line' => 57,
+            'ignorable' => true,
+        ],
     ];
 
 	public function testAll(): void
@@ -61,7 +71,7 @@ class IntegrationTest extends TestCase
 
 
         $this->assertSame(0, $errors['totals']['errors']);
-        $this->assertSame(5, $errors['totals']['file_errors']);
+        $this->assertSame(7, $errors['totals']['file_errors']);
 	}
 
 

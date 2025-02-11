@@ -49,4 +49,11 @@ class DateSet
             echo $v;
         }
     }
+
+    public function nonError(DateTimeInterface $date): void
+    {
+        echo $date->format('Ymd');
+        echo $date->format('m/d');
+        echo $date->format('Y-m-d');
+    }
 }
