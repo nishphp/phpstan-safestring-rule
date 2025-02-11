@@ -1,0 +1,12 @@
+parameters:
+    level: 8
+includes:
+    - ../../extension.neon
+
+services:
+    -
+        class: Nish\PHPStan\Rules\EchoHtmlRule
+        tags: [phpstan.rules.rule]
+    -
+        factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension(DateTimeInterface::format)
+        tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
