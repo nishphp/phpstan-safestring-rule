@@ -34,6 +34,20 @@ class RuleHelper
 			return true;
 		}
 
+		if ($type instanceof IntersectionType) {
+			$innerTypes = $type->getTypes();
+			foreach ($innerTypes as $innerType) {
+				if (self::acceptsString($innerType)) {
+					return true;
+				}
+
+				if (!$innerType->isString()->yes()) {
+					return false;
+				}
+			}
+			return false;
+		}
+
 		return false;
 	}
 

@@ -19,6 +19,7 @@ use PHPStan\Reflection\InitializerExprTypeResolver;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\ErrorType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -116,6 +117,10 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			return null;
 		}
 
+		if ($parentResult instanceof ErrorType) {
+			return $parentResult;
+		}
+
 		if (!RuleHelper::accepts($parentResult)) {
 			$type = $this->resolveTypeExtension($node, $scope);
 
@@ -123,7 +128,7 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 				return $type;
 			}
 		}
-		return $parentResult;
+		return null;
 	}
 
 	private function resolveTypeExtension(Expr $node, Scope $scope): ?Type
@@ -143,8 +148,20 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 
 		$leftStringType = $scope->getType($left)->toString();
 		$rightStringType = $scope->getType($right)->toString();
+		if (TypeCombinator::union(
+			$leftStringType,
+			$rightStringType,
+		) instanceof ErrorType) {
+			return new ErrorType();
+		}
 
-		if (RuleHelper::accepts($leftStringType) && RuleHelper::accepts($rightStringType)) {
+		// @see phpstan-src: src/Rules/Operators/InvalidBinaryOperationRule.php
+		// @see phpstan-src: src/Analyzer/MutatingScope.php
+		// @see phpstan-src: src/Reflection/InitializerExprTypeResolver.php
+		// var_dump($leftStringType->describe(\PHPStan\Type\VerbosityLevel::precise()));
+		// var_dump($rightStringType->describe(\PHPStan\Type\VerbosityLevel::precise()));
+
+		if (RuleHelper::acceptsString($leftStringType) && RuleHelper::acceptsString($rightStringType)) {
 			return TypeCombinator::intersect(new StringType(), new Accessory\AccessorySafeStringType());
 		}
 

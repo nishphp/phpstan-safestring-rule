@@ -53,6 +53,27 @@ class IntegrationTest extends TestCase
         ],
     ];
 
+    private const ERROR_BINARY_OP = [
+        [
+            'message' => "Binary operation \".\" between 'a' and array{} results in an error.",
+            'line' => 8,
+            'ignorable' => true,
+            'identifier' => 'binaryOp.invalid',
+        ],
+        [
+            'message' => "Function BinaryOpConcat\\test1() should return string but returns mixed.",
+            'line' => 9,
+            'ignorable' => true,
+            'identifier' => 'return.type',
+        ],
+        [
+            'message' => "Function BinaryOpConcat\\test5() should return safe-string but returns string.",
+            'line' => 41,
+            'ignorable' => true,
+            'identifier' => 'return.type',
+        ],
+    ];
+
 	public function testAll(): void
 	{
 		$output = $this->runPhpStan(__DIR__ . '/integration/', __DIR__ . '/integration/integration.neon');
@@ -75,6 +96,22 @@ class IntegrationTest extends TestCase
 	}
 
 
+    public function testLevel10(): void
+    {
+		$output = $this->runPhpStan(__DIR__ . '/integration10/', __DIR__ . '/integration10/level10.neon');
+		$errors = Json::decode($output, Json::FORCE_ARRAY);
+
+        $messages = $errors['files'][__DIR__ . '/integration10/binaryop-concat.php']['messages'];
+
+        //var_dump($errors);
+
+        $this->assertSame(self::ERROR_BINARY_OP, $messages);
+
+        $this->assertSame(0, $errors['totals']['errors']);
+        $this->assertSame(3, $errors['totals']['file_errors']);
+
+    }
+
     /** @see PHPStan\Command\ErrorFormatter\BaselineNeonErrorFormatterIntegrationTest */
 	private function runPhpStan(
 		string $analysedPath,
@@ -93,7 +130,7 @@ class IntegrationTest extends TestCase
 			throw new ShouldNotHappenException('Could not clear result cache.');
 		}
 
-		exec(sprintf('%s %s analyse --no-progress --error-format=%s --level=7 %s %s%s', escapeshellarg(PHP_BINARY), 'vendor/bin/phpstan', $errorFormatter, $configFile !== null ? '--configuration ' . escapeshellarg($configFile) : '', escapeshellarg($analysedPath), $baselineFile !== null ? ' --generate-baseline ' . escapeshellarg($baselineFile) : ''), $outputLines);
+		exec(sprintf('%s %s analyse --no-progress --error-format=%s %s %s%s', escapeshellarg(PHP_BINARY), 'vendor/bin/phpstan', $errorFormatter, $configFile !== null ? '--configuration ' . escapeshellarg($configFile) : '', escapeshellarg($analysedPath), $baselineFile !== null ? ' --generate-baseline ' . escapeshellarg($baselineFile) : ''), $outputLines);
 		chdir($originalDir);
 
 		return implode("\n", $outputLines);
