@@ -14,6 +14,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\ArgumentsNormalizer;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\Container;
 use PHPStan\Reflection\InitializerExprContext;
 use PHPStan\Reflection\InitializerExprTypeResolver;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -30,9 +31,12 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	/** @var array<int,DynamicFunctionReturnTypeExtension> */
 	private array $dynamicReturnTypeExtensions = [];
 
+	private const DYNAMIC_FUNCTION_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicFunctionReturnTypeExtension';
+
 	public function __construct(
 		private ReflectionProvider $reflectionProvider,
 		private InitializerExprTypeResolver $initializerExprTypeResolver,
+		Container $container,
 		SprintfFunctionDynamicReturnTypeExtension $sprintfExtension,
 		ReplaceFunctionsDynamicReturnTypeExtension $replaceExtension,
 		ImplodeFunctionDynamicReturnTypeExtension $implodeExtension,
@@ -45,6 +49,10 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			$implodeExtension,
 			$trimExtension,
 		];
+
+		/** @var array<int,DynamicFunctionReturnTypeExtension> */
+		$extensions = $container->getServicesByTag(self::DYNAMIC_FUNCTION_RETURN_TYPE_EXTENSION_TAG);
+		$this->dynamicReturnTypeExtensions = array_merge($this->dynamicReturnTypeExtensions, $extensions);
 	}
 
 	public function getType(Expr $node, Scope $scope): ?Type

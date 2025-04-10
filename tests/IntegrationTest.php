@@ -74,6 +74,14 @@ class IntegrationTest extends TestCase
         ],
     ];
 
+    private const ERROR_ISSUE1 = [
+        [
+            'message' => 'echo() Parameter #1 (string) is not safehtml-string.',
+            'line' => 9,
+            'ignorable' => true,
+        ],
+    ];
+
 	public function testAll(): void
 	{
 		$output = $this->runPhpStan(__DIR__ . '/integration/', __DIR__ . '/integration/integration.neon');
@@ -90,9 +98,12 @@ class IntegrationTest extends TestCase
         $messages = $errors['files'][__DIR__ . '/integration/array-bug1.php']['messages'];
         $this->assertSame(self::ERROR_ARRAY, $messages);
 
+        $messages = $errors['files'][__DIR__ . '/integration/issue1.php']['messages'];
+        $this->assertSame(self::ERROR_ISSUE1, $messages);
+
 
         $this->assertSame(0, $errors['totals']['errors']);
-        $this->assertSame(7, $errors['totals']['file_errors']);
+        $this->assertSame(8, $errors['totals']['file_errors']);
 	}
 
 
