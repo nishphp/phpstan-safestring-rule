@@ -33,7 +33,7 @@ services:
     tags: [phpstan.rules.rule]
   -
     factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension([htmlspecialchars, h, raw])
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+    tags: [nish.phpstan.broker.dynamicFunctionReturnTypeExtension]
 ```
 
  `composer.json` is:
@@ -140,7 +140,7 @@ services:
 # ...
   -
     factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension([htmlspecialchars, h, raw])
-    tags: [phpstan.broker.dynamicFunctionReturnTypeExtension]
+    tags: [nish.phpstan.broker.dynamicFunctionReturnTypeExtension]
 ```
 
 
