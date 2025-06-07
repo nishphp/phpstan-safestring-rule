@@ -221,14 +221,16 @@ When used for methods instead of functions:
 ```yaml
   -
     factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension(DateTimeInterface::format)
-    tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
+    tags: [nish.phpstan.broker.dynamicMethodReturnTypeExtension]
   -
     factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension(App\FormUtil::makeForm)
-    tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
+    tags: [nish.phpstan.broker.dynamicMethodReturnTypeExtension]
 
 ```
 
 Cannot specify more than one at a time.
+
+**Important:** Always use the custom `nish.phpstan.*` tags instead of PHPStan's core tags to avoid interference with PHPStan's internal processing.
 
 ## Use safe-string Custom Type
 

@@ -9,7 +9,7 @@ services:
         tags: [phpstan.rules.rule]
     -
         factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension(DateTimeInterface::format)
-        tags: [phpstan.broker.dynamicMethodReturnTypeExtension]
+        tags: [nish.phpstan.broker.dynamicMethodReturnTypeExtension]
     -
         factory: Nish\PHPStan\Type\SafeHtmlStringReturnTypeExtension([h, htmlspecialchars])
         tags: [nish.phpstan.broker.dynamicFunctionReturnTypeExtension]

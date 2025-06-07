@@ -41,16 +41,6 @@ class IntegrationTest extends TestCase
             'line' => 48,
             'ignorable' => true,
         ],
-        [
-            'message' => 'echo() Parameter #1 (non-falsy-string|safehtml-string) is not safehtml-string.',
-            'line' => 56,
-            'ignorable' => true,
-        ],
-        [
-            'message' => 'echo() Parameter #1 (non-falsy-string|safehtml-string) is not safehtml-string.',
-            'line' => 57,
-            'ignorable' => true,
-        ],
     ];
 
     private const ERROR_BINARY_OP = [
@@ -103,7 +93,7 @@ class IntegrationTest extends TestCase
 
 
         $this->assertSame(0, $errors['totals']['errors']);
-        $this->assertSame(8, $errors['totals']['file_errors']);
+        $this->assertSame(6, $errors['totals']['file_errors']);
 	}
 
 
