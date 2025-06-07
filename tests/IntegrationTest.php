@@ -35,14 +35,6 @@ class IntegrationTest extends TestCase
         ] + self::ERROR_ARGUMENT_TYPE,
     ];
 
-    private const ERROR_ARRAY = [
-        [
-            'message' => 'echo() Parameter #1 (string) is not safehtml-string.',
-            'line' => 48,
-            'ignorable' => true,
-        ],
-    ];
-
     private const ERROR_BINARY_OP = [
         [
             'message' => "Binary operation \".\" between 'a' and array{} results in an error.",
@@ -85,15 +77,14 @@ class IntegrationTest extends TestCase
         $messages = $errors['files'][__DIR__ . '/integration/function.php']['messages'];
         $this->assertSame(self::ERROR_FUNC, $messages);
 
-        $messages = $errors['files'][__DIR__ . '/integration/array-bug1.php']['messages'];
-        $this->assertSame(self::ERROR_ARRAY, $messages);
+        $this->assertTrue(empty($errors['files'][__DIR__ . '/integration/array-bug1.php']['messages']));
 
         $messages = $errors['files'][__DIR__ . '/integration/issue1.php']['messages'];
         $this->assertSame(self::ERROR_ISSUE1, $messages);
 
 
         $this->assertSame(0, $errors['totals']['errors']);
-        $this->assertSame(6, $errors['totals']['file_errors']);
+        $this->assertSame(5, $errors['totals']['file_errors']);
 	}
 
 

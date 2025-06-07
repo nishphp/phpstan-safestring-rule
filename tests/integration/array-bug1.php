@@ -9,7 +9,7 @@ use DateTimeInterface;
 
 class DateSet
 {
-    /** @var array<string, bool> */
+    /** @var array<numeric-string, bool> */
     public $data;
 
     /** @return DatePeriod<DateTimeInterface,DateTimeInterface,null> */

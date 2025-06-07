@@ -47,6 +47,9 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	/** @var DynamicStaticMethodReturnTypeExtension[][]|null */
 	private ?array $dynamicStaticMethodReturnTypeExtensionsByClass = null;
 
+	/** @var array<string, bool> */
+	private array $resolvingNodes = [];
+
 	private const DYNAMIC_FUNCTION_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicFunctionReturnTypeExtension';
 	private const DYNAMIC_METHOD_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicMethodReturnTypeExtension';
 	private const DYNAMIC_STATIC_METHOD_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicStaticMethodReturnTypeExtension';
@@ -83,6 +86,33 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 
 	public function getType(Expr $node, Scope $scope): ?Type
 	{
+		// Check if we should get core type first
+		$shouldCheckCoreType = ($node instanceof FuncCall || $node instanceof MethodCall || $node instanceof StaticCall);
+
+		if ($shouldCheckCoreType) {
+			// Create unique key for this node
+			$nodeKey = spl_object_hash($node);
+			
+			// Prevent recursion
+			if (isset($this->resolvingNodes[$nodeKey])) {
+				return null;
+			}
+
+			// Get core type
+			$this->resolvingNodes[$nodeKey] = true;
+			try {
+				$coreType = $scope->getType($node);
+			} finally {
+				unset($this->resolvingNodes[$nodeKey]);
+			}
+
+			// Check if core type is acceptable
+			if (RuleHelper::accepts($coreType)) {
+				return $coreType;
+			}
+		}
+
+		// Process with our extensions
 		$type = self::getTypeConcat($node, $scope);
 		if ($type) {
 				return $type;
