@@ -95,21 +95,16 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	{
 		// Process with our extensions
 		$type = self::getTypeConcat($node, $scope);
-		if ($type) {
-				return $type;
+		if ($type !== null) {
+			return $type;
 		}
 
 		$type = self::getTypeFunction($node, $scope);
-		if ($type) {
+		if ($type !== null) {
 			return $type;
 		}
 
-		$type = self::getTypeMethodCall($node, $scope);
-		if ($type) {
-			return $type;
-		}
-
-		return null;
+		return self::getTypeMethodCall($node, $scope);
 	}
 
 	private function getTypeFunction(Expr $node, Scope $scope): ?Type
@@ -138,13 +133,10 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			return null;
 		}
 
-		$hasOurExtension = false;
 		foreach ($this->dynamicReturnTypeExtensions as $dynamicFunctionReturnTypeExtension) {
 			if (!$dynamicFunctionReturnTypeExtension->isFunctionSupported($functionReflection)) {
 				continue;
 			}
-
-			$hasOurExtension = true;
 
 			// Check if PHPStan core has type for this function
 			$coreType = $this->getCoreTypeForFunction($functionReflection, $normalizedNode, $scope);
@@ -217,57 +209,53 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 		}
 
 		$resolvedTypes = [];
-		$hasOurExtension = false;
+		$isStatic = $normalizedNode instanceof StaticCall;
 		
 		foreach ($typeWithMethod->getObjectClassNames() as $className) {
-			if ($normalizedNode instanceof MethodCall) {
-				foreach ($this->getDynamicMethodReturnTypeExtensionsForClass($className) as $dynamicMethodReturnTypeExtension) {
-					if (!$dynamicMethodReturnTypeExtension->isMethodSupported($methodReflection)) {
+			$extensions = $isStatic 
+				? $this->getDynamicStaticMethodReturnTypeExtensionsForClass($className)
+				: $this->getDynamicMethodReturnTypeExtensionsForClass($className);
+			
+			foreach ($extensions as $extension) {
+				// Check if extension supports this method
+				if ($isStatic) {
+					/** @var DynamicStaticMethodReturnTypeExtension $extension */
+					if (!$extension->isStaticMethodSupported($methodReflection)) {
 						continue;
 					}
-
-					$hasOurExtension = true;
-					
-					// Check if PHPStan core has type for this method
-					$coreType = $this->getCoreTypeForMethod($className, $methodReflection, $normalizedNode, $scope);
-					if ($coreType !== null && RuleHelper::accepts($coreType)) {
-						return $coreType;
-					}
-
-					$resolvedType = $dynamicMethodReturnTypeExtension->getTypeFromMethodCall(
-						$methodReflection,
-						$normalizedNode,
-						$scope,
-					);
-					if ($resolvedType === null) {
+				} else {
+					/** @var DynamicMethodReturnTypeExtension $extension */
+					if (!$extension->isMethodSupported($methodReflection)) {
 						continue;
 					}
-
-					$resolvedTypes[] = $resolvedType;
 				}
-			} else {
-				foreach ($this->getDynamicStaticMethodReturnTypeExtensionsForClass($className) as $dynamicStaticMethodReturnTypeExtension) {
-					if (!$dynamicStaticMethodReturnTypeExtension->isStaticMethodSupported($methodReflection)) {
-						continue;
-					}
+				
+				// Check if PHPStan core has type for this method
+				$coreType = $this->getCoreTypeForMethodCall($className, $methodReflection, $normalizedNode, $scope);
+				if ($coreType !== null && RuleHelper::accepts($coreType)) {
+					return $coreType;
+				}
 
-					$hasOurExtension = true;
-					
-					// Check if PHPStan core has type for this static method
-					$coreType = $this->getCoreTypeForStaticMethod($className, $methodReflection, $normalizedNode, $scope);
-					if ($coreType !== null && RuleHelper::accepts($coreType)) {
-						return $coreType;
-					}
-
-					$resolvedType = $dynamicStaticMethodReturnTypeExtension->getTypeFromStaticMethodCall(
+				// Get type from our extension
+				if ($isStatic) {
+					/** @var DynamicStaticMethodReturnTypeExtension $extension */
+					/** @var StaticCall $normalizedNode */
+					$resolvedType = $extension->getTypeFromStaticMethodCall(
 						$methodReflection,
 						$normalizedNode,
 						$scope,
 					);
-					if ($resolvedType === null) {
-						continue;
-					}
-
+				} else {
+					/** @var DynamicMethodReturnTypeExtension $extension */
+					/** @var MethodCall $normalizedNode */
+					$resolvedType = $extension->getTypeFromMethodCall(
+						$methodReflection,
+						$normalizedNode,
+						$scope,
+					);
+				}
+				
+				if ($resolvedType !== null) {
 					$resolvedTypes[] = $resolvedType;
 				}
 			}
@@ -290,7 +278,6 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			foreach ($this->dynamicMethodReturnTypeExtensions as $extension) {
 				$byClass[strtolower($extension->getClass())][] = $extension;
 			}
-
 			$this->dynamicMethodReturnTypeExtensionsByClass = $byClass;
 		}
 		
@@ -309,7 +296,6 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			foreach ($this->dynamicStaticMethodReturnTypeExtensions as $extension) {
 				$byClass[strtolower($extension->getClass())][] = $extension;
 			}
-
 			$this->dynamicStaticMethodReturnTypeExtensionsByClass = $byClass;
 		}
 		
@@ -344,27 +330,21 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 
 	private function getTypeConcat(Expr $node, Scope $scope): ?Type
 	{
-		$parentResult = null;
-		if ($node instanceof Expr\BinaryOp\Concat || $node instanceof Expr\AssignOp\Concat) {
-			$parentResult = $this->initializerExprTypeResolver->getType($node, InitializerExprContext::fromScope($scope));
-		}
-
-		if ($parentResult === null) {
+		if (!($node instanceof Expr\BinaryOp\Concat) && !($node instanceof Expr\AssignOp\Concat)) {
 			return null;
 		}
 
+		$parentResult = $this->initializerExprTypeResolver->getType($node, InitializerExprContext::fromScope($scope));
+		
 		if ($parentResult instanceof ErrorType) {
 			return $parentResult;
 		}
 
-		if (!RuleHelper::accepts($parentResult)) {
-			$type = $this->resolveTypeExtension($node, $scope);
-
-			if ($type !== null) {
-				return $type;
-			}
+		if (RuleHelper::accepts($parentResult)) {
+			return null;
 		}
-		return null;
+
+		return $this->resolveTypeExtension($node, $scope);
 	}
 
 	private function resolveTypeExtension(Expr $node, Scope $scope): ?Type
@@ -491,15 +471,6 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 		return null;
 	}
 
-	private function getCoreTypeForMethod(string $className, \PHPStan\Reflection\MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
-	{
-		return $this->getCoreTypeForMethodCall($className, $methodReflection, $methodCall, $scope);
-	}
-
-	private function getCoreTypeForStaticMethod(string $className, \PHPStan\Reflection\MethodReflection $methodReflection, StaticCall $staticCall, Scope $scope): ?Type
-	{
-		return $this->getCoreTypeForMethodCall($className, $methodReflection, $staticCall, $scope);
-	}
 
 	private function getCoreTypeForFunction(\PHPStan\Reflection\FunctionReflection $functionReflection, FuncCall $funcCall, Scope $scope): ?Type
 	{
