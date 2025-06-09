@@ -28,6 +28,7 @@ use PHPStan\Type\ErrorType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\DependencyInjection\Type\DynamicReturnTypeExtensionRegistryProvider;
 
 class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeResolverExtension
 {
@@ -50,6 +51,11 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	/** @var array<string, bool> */
 	private array $resolvingNodes = [];
 
+	/** @var array<string, array<string, true>> */
+	private array $coreExtensionCache = [];
+
+	private ?\PHPStan\Type\DynamicReturnTypeExtensionRegistry $coreRegistry = null;
+
 	private const DYNAMIC_FUNCTION_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicFunctionReturnTypeExtension';
 	private const DYNAMIC_METHOD_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicMethodReturnTypeExtension';
 	private const DYNAMIC_STATIC_METHOD_RETURN_TYPE_EXTENSION_TAG = 'nish.phpstan.broker.dynamicStaticMethodReturnTypeExtension';
@@ -57,6 +63,7 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 	public function __construct(
 		private ReflectionProvider $reflectionProvider,
 		private InitializerExprTypeResolver $initializerExprTypeResolver,
+		private DynamicReturnTypeExtensionRegistryProvider $coreRegistryProvider,
 		Container $container,
 		SprintfFunctionDynamicReturnTypeExtension $sprintfExtension,
 		ReplaceFunctionsDynamicReturnTypeExtension $replaceExtension,
@@ -86,32 +93,6 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 
 	public function getType(Expr $node, Scope $scope): ?Type
 	{
-		// Check if we should get core type first
-		$shouldCheckCoreType = ($node instanceof FuncCall || $node instanceof MethodCall || $node instanceof StaticCall);
-
-		if ($shouldCheckCoreType) {
-			// Create unique key for this node
-			$nodeKey = spl_object_hash($node);
-			
-			// Prevent recursion
-			if (isset($this->resolvingNodes[$nodeKey])) {
-				return null;
-			}
-
-			// Get core type
-			$this->resolvingNodes[$nodeKey] = true;
-			try {
-				$coreType = $scope->getType($node);
-			} finally {
-				unset($this->resolvingNodes[$nodeKey]);
-			}
-
-			// Check if core type is acceptable
-			if (RuleHelper::accepts($coreType)) {
-				return $coreType;
-			}
-		}
-
 		// Process with our extensions
 		$type = self::getTypeConcat($node, $scope);
 		if ($type) {
@@ -157,9 +138,18 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			return null;
 		}
 
+		$hasOurExtension = false;
 		foreach ($this->dynamicReturnTypeExtensions as $dynamicFunctionReturnTypeExtension) {
 			if (!$dynamicFunctionReturnTypeExtension->isFunctionSupported($functionReflection)) {
 				continue;
+			}
+
+			$hasOurExtension = true;
+
+			// Check if PHPStan core has type for this function
+			$coreType = $this->getCoreTypeForFunction($functionReflection, $normalizedNode, $scope);
+			if ($coreType !== null && RuleHelper::accepts($coreType)) {
+				return $coreType;
 			}
 
 			$resolvedType = $dynamicFunctionReturnTypeExtension->getTypeFromFunctionCall(
@@ -227,11 +217,21 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 		}
 
 		$resolvedTypes = [];
+		$hasOurExtension = false;
+		
 		foreach ($typeWithMethod->getObjectClassNames() as $className) {
 			if ($normalizedNode instanceof MethodCall) {
 				foreach ($this->getDynamicMethodReturnTypeExtensionsForClass($className) as $dynamicMethodReturnTypeExtension) {
 					if (!$dynamicMethodReturnTypeExtension->isMethodSupported($methodReflection)) {
 						continue;
+					}
+
+					$hasOurExtension = true;
+					
+					// Check if PHPStan core has type for this method
+					$coreType = $this->getCoreTypeForMethod($className, $methodReflection, $normalizedNode, $scope);
+					if ($coreType !== null && RuleHelper::accepts($coreType)) {
+						return $coreType;
 					}
 
 					$resolvedType = $dynamicMethodReturnTypeExtension->getTypeFromMethodCall(
@@ -249,6 +249,14 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 				foreach ($this->getDynamicStaticMethodReturnTypeExtensionsForClass($className) as $dynamicStaticMethodReturnTypeExtension) {
 					if (!$dynamicStaticMethodReturnTypeExtension->isStaticMethodSupported($methodReflection)) {
 						continue;
+					}
+
+					$hasOurExtension = true;
+					
+					// Check if PHPStan core has type for this static method
+					$coreType = $this->getCoreTypeForStaticMethod($className, $methodReflection, $normalizedNode, $scope);
+					if ($coreType !== null && RuleHelper::accepts($coreType)) {
+						return $coreType;
 					}
 
 					$resolvedType = $dynamicStaticMethodReturnTypeExtension->getTypeFromStaticMethodCall(
@@ -393,6 +401,154 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			return TypeCombinator::intersect(new StringType(), new Accessory\AccessorySafeStringType());
 		}
 
+		return null;
+	}
+
+	private function getCoreRegistry(): \PHPStan\Type\DynamicReturnTypeExtensionRegistry
+	{
+		if ($this->coreRegistry === null) {
+			$this->coreRegistry = $this->coreRegistryProvider->getRegistry();
+		}
+		return $this->coreRegistry;
+	}
+
+	/**
+	 * @param MethodCall|StaticCall $call
+	 */
+	private function getCoreTypeForMethodCall(string $className, \PHPStan\Reflection\MethodReflection $methodReflection, $call, Scope $scope): ?Type
+	{
+		$isStatic = $call instanceof StaticCall;
+		$cacheKey = $className . '::' . $methodReflection->getName() . ($isStatic ? '::static' : '');
+		
+		// Check cache first
+		if (!isset($this->coreExtensionCache[$cacheKey])) {
+			// Initialize cache entry
+			$this->coreExtensionCache[$cacheKey] = [];
+			
+			// Get core extensions for this class
+			if ($isStatic) {
+				$coreExtensions = $this->getCoreRegistry()->getDynamicStaticMethodReturnTypeExtensionsForClass($className);
+			} else {
+				$coreExtensions = $this->getCoreRegistry()->getDynamicMethodReturnTypeExtensionsForClass($className);
+			}
+			
+			// Check which core extensions support this method
+			foreach ($coreExtensions as $extension) {
+				if ($isStatic) {
+					/** @var DynamicStaticMethodReturnTypeExtension $extension */
+					if ($extension->isStaticMethodSupported($methodReflection)) {
+						$this->coreExtensionCache[$cacheKey][spl_object_hash($extension)] = true;
+					}
+				} else {
+					/** @var DynamicMethodReturnTypeExtension $extension */
+					if ($extension->isMethodSupported($methodReflection)) {
+						$this->coreExtensionCache[$cacheKey][spl_object_hash($extension)] = true;
+					}
+				}
+			}
+		}
+		
+		// If no core extensions support this method, return null
+		if (empty($this->coreExtensionCache[$cacheKey])) {
+			return null;
+		}
+		
+		// Get type from core extensions
+		$nodeKey = spl_object_hash($call);
+		if (isset($this->resolvingNodes[$nodeKey])) {
+			return null;
+		}
+		
+		$this->resolvingNodes[$nodeKey] = true;
+		try {
+			if ($isStatic) {
+				$coreExtensions = $this->getCoreRegistry()->getDynamicStaticMethodReturnTypeExtensionsForClass($className);
+			} else {
+				$coreExtensions = $this->getCoreRegistry()->getDynamicMethodReturnTypeExtensionsForClass($className);
+			}
+			
+			foreach ($coreExtensions as $extension) {
+				$extensionKey = spl_object_hash($extension);
+				if (isset($this->coreExtensionCache[$cacheKey][$extensionKey])) {
+					if ($isStatic) {
+						/** @var DynamicStaticMethodReturnTypeExtension $extension */
+						/** @var StaticCall $call */
+						$type = $extension->getTypeFromStaticMethodCall($methodReflection, $call, $scope);
+					} else {
+						/** @var DynamicMethodReturnTypeExtension $extension */
+						/** @var MethodCall $call */
+						$type = $extension->getTypeFromMethodCall($methodReflection, $call, $scope);
+					}
+					if ($type !== null) {
+						return $type;
+					}
+				}
+			}
+		} finally {
+			unset($this->resolvingNodes[$nodeKey]);
+		}
+		
+		return null;
+	}
+
+	private function getCoreTypeForMethod(string $className, \PHPStan\Reflection\MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
+	{
+		return $this->getCoreTypeForMethodCall($className, $methodReflection, $methodCall, $scope);
+	}
+
+	private function getCoreTypeForStaticMethod(string $className, \PHPStan\Reflection\MethodReflection $methodReflection, StaticCall $staticCall, Scope $scope): ?Type
+	{
+		return $this->getCoreTypeForMethodCall($className, $methodReflection, $staticCall, $scope);
+	}
+
+	private function getCoreTypeForFunction(\PHPStan\Reflection\FunctionReflection $functionReflection, FuncCall $funcCall, Scope $scope): ?Type
+	{
+		$functionName = $functionReflection->getName();
+		$cacheKey = 'function::' . $functionName;
+		
+		// Check cache first
+		if (!isset($this->coreExtensionCache[$cacheKey])) {
+			// Initialize cache entry
+			$this->coreExtensionCache[$cacheKey] = [];
+			
+			// Get core function extensions
+			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions();
+			
+			// Check which core extensions support this function
+			foreach ($coreFunctionExtensions as $extension) {
+				if ($extension->isFunctionSupported($functionReflection)) {
+					$this->coreExtensionCache[$cacheKey][spl_object_hash($extension)] = true;
+				}
+			}
+		}
+		
+		// If no core extensions support this function, return null
+		if (empty($this->coreExtensionCache[$cacheKey])) {
+			return null;
+		}
+		
+		// Get type from core extensions
+		$nodeKey = spl_object_hash($funcCall);
+		if (isset($this->resolvingNodes[$nodeKey])) {
+			return null;
+		}
+		
+		$this->resolvingNodes[$nodeKey] = true;
+		try {
+			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions();
+			foreach ($coreFunctionExtensions as $extension) {
+				$extensionKey = spl_object_hash($extension);
+				if (isset($this->coreExtensionCache[$cacheKey][$extensionKey])) {
+					$type = $extension->getTypeFromFunctionCall($functionReflection, $funcCall, $scope);
+					if ($type !== null) {
+						return $type;
+					}
+				}
+			}
+		} finally {
+			unset($this->resolvingNodes[$nodeKey]);
+		}
+		
 		return null;
 	}
 

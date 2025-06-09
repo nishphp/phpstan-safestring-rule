@@ -13,3 +13,6 @@ parameters:
     -
       identifier: phpstanApi.instanceofType
       path: src/Rules/RuleHelper.php
+    -
+      identifier: phpstanApi.method
+      path: src/Type/ExpressionTypeResolverExtension.php
