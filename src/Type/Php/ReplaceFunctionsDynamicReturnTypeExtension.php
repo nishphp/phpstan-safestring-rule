@@ -10,36 +10,32 @@ use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
 
 class ReplaceFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-	public function __construct(
-		private \PHPStan\Type\Php\ReplaceFunctionsDynamicReturnTypeExtension $parentClass,
-	)
-	{
-	}
-
 	public function isFunctionSupported(FunctionReflection $functionReflection): bool
 	{
-		return $this->parentClass->isFunctionSupported($functionReflection);
+		return in_array($functionReflection->getName(), ['str_replace', 'str_ireplace', 'strtr', 'preg_replace', 'preg_replace_callback'], true);
 	}
 
 	public function getTypeFromFunctionCall(
 		FunctionReflection $functionReflection,
 		FuncCall $functionCall,
 		Scope $scope
-	): Type
+	): ?Type
 	{
-		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
-
 		if (RuleHelper::isSafeAllArgs($functionCall, $scope)) {
-			return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+			return new IntersectionType([
+				new StringType(),
+				new AccessorySafeStringType(),
+			]);
 		}
 
-		return $originalResult;
+		return null;
 	}
 
 }

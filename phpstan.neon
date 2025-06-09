@@ -2,9 +2,6 @@ parameters:
   level: max
   ignoreErrors:
     -
-      identifier: phpstanApi.method
-      path: src/Type/Php/*
-    -
       identifier: phpstanApi.class
       path: src/Type/Accessory/*
     -
