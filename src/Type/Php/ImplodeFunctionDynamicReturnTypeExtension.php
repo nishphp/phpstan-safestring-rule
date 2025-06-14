@@ -10,21 +10,16 @@ use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
 
 class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-	public function __construct(
-		private \PHPStan\Type\Php\ImplodeFunctionReturnTypeExtension $parentClass,
-	)
-	{
-	}
-
 	public function isFunctionSupported(FunctionReflection $functionReflection): bool
 	{
-		return $this->parentClass->isFunctionSupported($functionReflection);
+		return $functionReflection->getName() === 'implode' || $functionReflection->getName() === 'join';
 	}
 
 	public function getTypeFromFunctionCall(
@@ -33,24 +28,22 @@ class ImplodeFunctionDynamicReturnTypeExtension implements DynamicFunctionReturn
 		Scope $scope
 	): ?Type
 	{
-		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
-		if (RuleHelper::accepts($originalResult)) {
-			return $originalResult;
+		$args = $functionCall->getArgs();
+		if (count($args) < 2) {
+			return null;
 		}
 
-		$args = $functionCall->getArgs();
 		$glueType = $scope->getType($args[0]->value);
 		$piecesType = $scope->getType($args[1]->value);
 
-		if (!RuleHelper::acceptsString($glueType)) {
-			return $originalResult;
+		if (RuleHelper::acceptsString($glueType) && RuleHelper::accepts($piecesType)) {
+			return new IntersectionType([
+				new StringType(),
+				new AccessorySafeStringType(),
+			]);
 		}
 
-		if (!RuleHelper::accepts($piecesType)) {
-			return $originalResult;
-		}
-
-		return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+		return null;
 	}
 
 }

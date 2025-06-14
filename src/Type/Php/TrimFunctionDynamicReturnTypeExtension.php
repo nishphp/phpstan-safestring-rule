@@ -10,21 +10,16 @@ use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
 
 class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-	public function __construct(
-		private \PHPStan\Type\Php\TrimFunctionDynamicReturnTypeExtension $parentClass,
-	)
-	{
-	}
-
 	public function isFunctionSupported(FunctionReflection $functionReflection): bool
 	{
-		return $this->parentClass->isFunctionSupported($functionReflection);
+		return in_array($functionReflection->getName(), ['trim', 'rtrim', 'ltrim'], true);
 	}
 
 	public function getTypeFromFunctionCall(
@@ -34,18 +29,20 @@ class TrimFunctionDynamicReturnTypeExtension implements DynamicFunctionReturnTyp
 	): ?Type
 	{
 		$args = $functionCall->getArgs();
-		$argType = $scope->getType($args[0]->value);
-
-		$originalResult = $this->parentClass->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
-		if (!$originalResult) {
+		if (count($args) < 1) {
 			return null;
 		}
 
+		$argType = $scope->getType($args[0]->value);
+
 		if (RuleHelper::accepts($argType)) {
-			return TypeCombinator::intersect($originalResult, new AccessorySafeStringType());
+			return new IntersectionType([
+				new StringType(),
+				new AccessorySafeStringType(),
+			]);
 		}
 
-		return $originalResult;
+		return null;
 	}
 
 }
