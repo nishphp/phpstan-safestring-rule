@@ -435,7 +435,7 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 			$this->coreExtensionCache[$cacheKey] = [];
 
 			// Get core function extensions
-			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions();
+			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions($functionReflection);
 
 			// Check which core extensions support this function
 			foreach ($coreFunctionExtensions as $extension) {
@@ -458,7 +458,7 @@ class ExpressionTypeResolverExtension implements \PHPStan\Type\ExpressionTypeRes
 
 		$this->resolvingNodes[$nodeKey] = true;
 		try {
-			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions();
+			$coreFunctionExtensions = $this->getCoreRegistry()->getDynamicFunctionReturnTypeExtensions($functionReflection);
 			foreach ($coreFunctionExtensions as $extension) {
 				$extensionKey = spl_object_hash($extension);
 				if (isset($this->coreExtensionCache[$cacheKey][$extensionKey])) {

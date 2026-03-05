@@ -14,6 +14,10 @@ class SafeStringCallRuleTest extends RuleTestCase
     /** @override */
 	protected function getRule(): Rule
 	{
+
+	    /** @var RuleLevelHelper $ruleLevelHelper */
+    	$ruleLevelHelper = self::getContainer()->getByType(RuleLevelHelper::class);
+
 		return new SafeStringCallRule(
             [
                 'query' => 0,
@@ -21,7 +25,7 @@ class SafeStringCallRuleTest extends RuleTestCase
                 'Nish\PHPStan\Test\SqlString::append' => 0,
                 'Nish\PHPStan\Test\SqlString::create' => 1,
             ],
-			new RuleLevelHelper($this->createReflectionProvider(), true, false, true, true, true, true)
+			$ruleLevelHelper
 		);
 	}
 

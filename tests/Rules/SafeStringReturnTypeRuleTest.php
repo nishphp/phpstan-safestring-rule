@@ -15,6 +15,10 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
     /** @override */
 	protected function getRule(): Rule
 	{
+
+	/** @var RuleLevelHelper $ruleLevelHelper */
+    	$ruleLevelHelper = self::getContainer()->getByType(RuleLevelHelper::class);
+
 		return new SafeStringReturnTypeRule(
             [
                 'getQuery1',
@@ -25,7 +29,7 @@ class SafeStringReturnTypeRuleTest extends RuleTestCase
                 'ReturnTypes::getSafe',
                 'ReturnTypes::getRaw',
             ],
-            new FunctionReturnTypeCheck(new RuleLevelHelper($this->createReflectionProvider(), true, false, true, true, true, true))
+            new FunctionReturnTypeCheck($ruleLevelHelper)
 		);
 	}
 
