@@ -1,0 +1,5 @@
+services:
+    -
+        class: Nish\PHPStan\PhpDoc\TypeNodeResolverExtension
+        tags:
+            - phpstan.phpDoc.typeNodeResolverExtension

@@ -15,24 +15,20 @@ use Closure;
  */
 class EchoHtmlRuleTest extends RuleTestCase
 {
-	public function setUp(): void
-	{
-        $resolver = self::getContainer()
-                  ->getByType(TypeNodeResolver::class);
-        Closure::bind(function(){
-            $this->extensions[]
-                = new \Nish\PHPStan\PhpDoc\TypeNodeResolverExtension();
-        }, $resolver, TypeNodeResolver::class)->__invoke();
 
-        // TODO: Where has the function of getTypeNodeResolverExtensions moved?
+	public static function getAdditionalConfigFiles(): array
+	{
+		return [__DIR__ . '/../phpstan.neon'];
 	}
+
 
     /** @override */
 	protected function getRule(): Rule
 	{
-		return new EchoHtmlRule(
-			new RuleLevelHelper($this->createReflectionProvider(), true, false, true, true, true, true)
-		);
+		/** @var RuleLevelHelper $ruleLevelHelper */
+		$ruleLevelHelper = self::getContainer()->getByType(RuleLevelHelper::class);
+
+		return new EchoHtmlRule($ruleLevelHelper);
 	}
 
 	public function testEchoHtmlRule(): void
@@ -50,11 +46,10 @@ class EchoHtmlRuleTest extends RuleTestCase
 				'echo() Parameter #1 (bool|float|int|string) is not safehtml-string.',
 				31,
 			],
-			// [
-			// 	'echo() Parameter #1 (string) is not safehtml-string.',
-			// 	36,
-			// ],
-			// checked by other rule
+			[
+				'echo() Parameter #1 (string) is not safehtml-string.',
+				36,
+			],
 		]);
 	}
 }
